@@ -30,6 +30,17 @@ namespace GyanDyan.Exceptions
                 };
                 context.ExceptionHandled = true;
             }
+
+            if(context.Exception is DaysClashingException)
+            {
+                Console.WriteLine($"LOG: {context.Exception.Message}");
+
+                context.Result = new ObjectResult(new { Message = "The selected days are clashing with one of your existing classes" })
+                {
+                    StatusCode = 401
+                };
+                context.ExceptionHandled = true;
+            }
         }
 
         public void OnActionExecuting(ActionExecutingContext context)

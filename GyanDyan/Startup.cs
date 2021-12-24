@@ -37,6 +37,7 @@ namespace GyanDyan
             services.AddDbContext<Context>(
                 options => options.UseSqlServer(Configuration.GetConnectionString("SqlServer")));
             services.AddScoped<IUserService, UserServices>();
+            services.AddScoped<IStudentRequirement, RequirementService>();
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
