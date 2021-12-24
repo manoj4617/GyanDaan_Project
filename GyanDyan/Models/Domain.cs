@@ -12,6 +12,8 @@ namespace GyanDyan.Models
             public int Id { get; set; }
             public string FirstName { get; set; }
             public string LastName { get; set; }
+            public Gender Gender { get; set; }
+
             public string MobileNumber { get; set; }
             public DateTime JoinedOn { get; set; }
             public DateTime DateOfBirth { get; set; }
@@ -22,6 +24,7 @@ namespace GyanDyan.Models
             public string City { get; set; }
             public string State { get; set; }
             public long Pin { get; set; }
+            public bool IsVolunteer { get; set; }
             public EducationQualification EducationQualification { get; set; }
             public IList<StudentRequirement> StudentRequirements { get; set; }
             public IList<OneToOne> OneToOne { get; set; }
@@ -51,6 +54,7 @@ namespace GyanDyan.Models
             public int Id { get; set; }
             public string FirstName { get; set; }
             public string LastName { get; set; }
+            public Gender Gender { get; set; }
             public string MobileNumber { get; set; }
             public DateTime JoinedOn { get; set; }
             public DateTime DateOfBirth { get; set; }
@@ -134,6 +138,12 @@ namespace GyanDyan.Models
             Friday,
             Saturday,
             Sunday
+        }
+
+        public enum Gender
+        {
+            Female,
+            Male
         }
         #endregion
     }
