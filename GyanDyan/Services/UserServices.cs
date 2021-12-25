@@ -150,7 +150,7 @@ namespace GyanDyan.Services
         private bool StudentExists(string email)
         {
             return _user.StudentProfiles.Any(e => e.Email == email);
-        }
+                }
 
         //out keyword stores the calculated passwordHash and passwordSalt in the variables passed
         private void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
