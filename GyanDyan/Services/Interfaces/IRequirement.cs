@@ -3,8 +3,9 @@ using System.Threading.Tasks;
 
 namespace GyanDyan.Services.Interfaces
 {
-    public interface IStudentRequirement
+    public interface IRequirement
     {
         Task AddNewStudentRequirement(StudentRequirementViewModel requirementViewModel);
+        Task AddNewVolunteerRequirement(VolunteerRequirementViewModel requirementViewModel);
     }
 }

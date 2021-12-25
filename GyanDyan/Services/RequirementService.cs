@@ -11,7 +11,7 @@ using GyanDyan.Exceptions;
 
 namespace GyanDyan.Services
 {
-    public class RequirementService : IStudentRequirement
+    public class RequirementService : IRequirement
     {
         private readonly Context _studentContext;
         private readonly IConfiguration _configuration;
@@ -26,7 +26,7 @@ namespace GyanDyan.Services
         {
             //This query gets all the student requirement for the particular studnet 
             //which have same timings so that the requirements timing dont clash
-            await CheckIfDaysClash(requirementViewModel);
+            await CheckIfStudentDaysClash(requirementViewModel);
           
             var newStudentRequirement = new StudentRequirement()
             {
@@ -45,13 +45,39 @@ namespace GyanDyan.Services
             SaveChangesToDB();
         }
 
+        public async Task AddNewVolunteerRequirement(VolunteerRequirementViewModel requirementViewModel)
+        {
+            await CheckIfVolunteerDaysClash(requirementViewModel);
+
+            var newVolunteerRequirement = new VolunteerRequirement()
+            {
+                VolunteerProfileId = requirementViewModel.VolunteerProfileId,
+                PostedOnDate = DateTime.Now,
+                StartDay = (Days)Enum.Parse(typeof(Days), requirementViewModel.StartDay),
+                EndDay = (Days)Enum.Parse(typeof(Days), requirementViewModel.EndDay),
+                StartTime = requirementViewModel.StartTime,
+                EndTime = requirementViewModel.EndTime,
+                AreaOfSpecialization = requirementViewModel.AreaOfspecialization,
+                TypeOfClass = (TypeOfClass)Enum.Parse(typeof(TypeOfClass), requirementViewModel.TypeOfClass)
+            };
+
+            await _studentContext.VolunteerRequirements.AddAsync(newVolunteerRequirement);
+
+            SaveChangesToDB();
+        }
+
+        //Getting Student Requirements
+
+        //Getting Volunteer Requirements
+
+      
 
         #region PRIVATE HELPER METHODS
 
         //This query gets all the student requirement for the particular studnet 
         //which have same timings so that the requirements timing dont clash
         //throws an exception if the days clash
-        private async Task CheckIfDaysClash(StudentRequirementViewModel studentRequirement)
+        private async Task CheckIfStudentDaysClash(StudentRequirementViewModel studentRequirement)
         {
             //this query gets all the existing requirements which have similar timings to the new one
             var getRequirementWithSimilarTimings = await _studentContext.StudentRequirements
@@ -69,14 +95,40 @@ namespace GyanDyan.Services
             {
                 var existingStartDay = (int)s.StartDay;
                 var existingEndDay = (int)s.EndDay;
-                if((existingStartDay <= newStartDay || newStartDay >= existingEndDay) ||
-                    (existingStartDay <= newEndDay || newEndDay >= existingEndDay))
+                if((existingStartDay <= newStartDay && newStartDay <= existingEndDay) ||
+                    (existingStartDay <= newEndDay && newEndDay <= existingEndDay))
                 {
                     //if the days are clashing throws an exception
                     throw new DaysClashingException($"The selected days clash with the schedule for {s.Topic} class");
                 }
             }
         }
+
+        private async Task CheckIfVolunteerDaysClash(VolunteerRequirementViewModel requirementViewModel)
+        {
+            var getRequirementWithSimilarTimings = await _studentContext.VolunteerRequirements
+                .Where(v => v.VolunteerProfileId == requirementViewModel.VolunteerProfileId &&
+                    v.StartTime == requirementViewModel.StartTime &&
+                    v.EndTime == requirementViewModel.EndTime)
+                .Select(v => new { v.Id, v.StartDay, v.EndDay, v.AreaOfSpecialization })
+                .ToListAsync();
+
+            var newStartDay = (int)Enum.Parse(typeof(Days), requirementViewModel.StartDay);
+            var newEndDay = (int)Enum.Parse(typeof(Days), requirementViewModel.EndDay);
+
+            foreach (var s in getRequirementWithSimilarTimings)
+            {
+                var existingStartDay = (int)s.StartDay;
+                var existingEndDay = (int)s.EndDay;
+                if ((existingStartDay <= newStartDay && newStartDay <= existingEndDay) ||
+                    (existingStartDay <= newEndDay && newEndDay <= existingEndDay))
+                {
+                    //if the days are clashing throws an exception
+                    throw new DaysClashingException($"The selected days clash with the schedule for {s.AreaOfSpecialization} class");
+                }
+            }
+        }
+
         private void SaveChangesToDB()
         {
             _studentContext.SaveChanges();

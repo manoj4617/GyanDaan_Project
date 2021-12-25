@@ -12,9 +12,9 @@ namespace GyanDyan.Controllers
     [ApiController]
     public class RequirementController : ControllerBase
     {
-        private readonly IStudentRequirement _studentRequirements;
+        private readonly IRequirement _studentRequirements;
 
-        public RequirementController(IStudentRequirement studentRequirements)
+        public RequirementController(IRequirement studentRequirements)
         {
             _studentRequirements = studentRequirements;
         }
@@ -25,6 +25,14 @@ namespace GyanDyan.Controllers
         public async Task<IActionResult> AddNewStudentRequirement(StudentRequirementViewModel requirementViewModel)
         {
             await _studentRequirements.AddNewStudentRequirement(requirementViewModel);
+            return Ok("Your new requirement was added!!!");
+        }
+
+        [Authorize(Policy = StaticProvider.VolunteerPolicy)]
+        [HttpPost("new-volunteer-requirement")]
+        public async Task<IActionResult> AddNewVolunteerRequirement(VolunteerRequirementViewModel requirementViewModel)
+        {
+            await _studentRequirements.AddNewVolunteerRequirement(requirementViewModel);
             return Ok("Your new requirement was added!!!");
         }
     }

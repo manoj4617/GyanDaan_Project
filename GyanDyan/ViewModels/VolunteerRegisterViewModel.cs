@@ -35,7 +35,7 @@ namespace GyanDyan.ViewModels
         [Required, MinLength(3), MaxLength(15)]
         public string State { get; set; }
 
-        [Required, Range(100_000, 999_999)]
+        [Required, Range(100000, 999999)]
         public long Pin { get; set; }
 
         [Required(ErrorMessage = "Please select your Education Qualification")]
