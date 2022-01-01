@@ -11,10 +11,15 @@
     <Compile Remove="Migrations\20211223085517_SecondMigration.Designer.cs" />
     <Compile Remove="Migrations\20211223085636_InitialMigration.cs" />
     <Compile Remove="Migrations\20211223085636_InitialMigration.Designer.cs" />
+    <Compile Remove="Migrations\20211231082407_madeFewchanges.cs" />
+    <Compile Remove="Migrations\20211231082407_madeFewchanges.Designer.cs" />
+    <Compile Remove="Migrations\20220101075917_AddedNewTable.cs" />
+    <Compile Remove="Migrations\20220101075917_AddedNewTable.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="3.1.22" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Abstractions" Version="2.2.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.22" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="3.1.22">
       <PrivateAssets>all</PrivateAssets>

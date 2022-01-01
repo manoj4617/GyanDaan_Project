@@ -16,6 +16,7 @@ namespace GyanDyan.DataAccess
         public DbSet<VolunteerRequirement> VolunteerRequirements { get; set; }
         public DbSet<OneToOne> OneToOneClass { get; set; }
         public DbSet<Group> GroupsClass { get; set; }
+        public DbSet<VolunteerInbox> VolunteerInboxes { get; set; }
         //public DbSet<Schedule> Schedules { get; set; }
 
 

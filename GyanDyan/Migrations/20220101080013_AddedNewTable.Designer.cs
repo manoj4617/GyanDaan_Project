@@ -4,14 +4,16 @@ using GyanDyan.DataAccess;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace GyanDyan.Migrations
 {
     [DbContext(typeof(Context))]
-    partial class ContextModelSnapshot : ModelSnapshot
+    [Migration("20220101080013_AddedNewTable")]
+    partial class AddedNewTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -200,20 +202,12 @@ namespace GyanDyan.Migrations
                     b.Property<int?>("StudentProfileId")
                         .HasColumnType("int");
 
-                    b.Property<int>("VolunteerId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("VolunteerProfileId")
-                        .HasColumnType("int");
-
                     b.Property<int>("VolunteerRequirementId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
                     b.HasIndex("StudentProfileId");
-
-                    b.HasIndex("VolunteerProfileId");
 
                     b.HasIndex("VolunteerRequirementId");
 
@@ -356,10 +350,6 @@ namespace GyanDyan.Migrations
                     b.HasOne("GyanDyan.Models.Domain+StudentProfile", "StudentProfile")
                         .WithMany("VolunteerInboxes")
                         .HasForeignKey("StudentProfileId");
-
-                    b.HasOne("GyanDyan.Models.Domain+VolunteerProfile", "VolunteerProfile")
-                        .WithMany("VolunteerInboxes")
-                        .HasForeignKey("VolunteerProfileId");
 
                     b.HasOne("GyanDyan.Models.Domain+VolunteerRequirement", "VolunteerRequirement")
                         .WithMany("VolunteerInboxes")

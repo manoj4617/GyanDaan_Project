@@ -4,14 +4,16 @@ using GyanDyan.DataAccess;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace GyanDyan.Migrations
 {
     [DbContext(typeof(Context))]
-    partial class ContextModelSnapshot : ModelSnapshot
+    [Migration("20220101043702_MadeChangesToVolunteerRequiremetn")]
+    partial class MadeChangesToVolunteerRequiremetn
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -187,39 +189,6 @@ namespace GyanDyan.Migrations
                     b.ToTable("StudentRequirements");
                 });
 
-            modelBuilder.Entity("GyanDyan.Models.Domain+VolunteerInbox", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int>("StudentId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("StudentProfileId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("VolunteerId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("VolunteerProfileId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("VolunteerRequirementId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("StudentProfileId");
-
-                    b.HasIndex("VolunteerProfileId");
-
-                    b.HasIndex("VolunteerRequirementId");
-
-                    b.ToTable("VolunteerInboxes");
-                });
-
             modelBuilder.Entity("GyanDyan.Models.Domain+VolunteerProfile", b =>
                 {
                     b.Property<int>("Id")
@@ -347,23 +316,6 @@ namespace GyanDyan.Migrations
                     b.HasOne("GyanDyan.Models.Domain+StudentProfile", "StudentProfile")
                         .WithMany("StudentRequirements")
                         .HasForeignKey("StudentProfileId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("GyanDyan.Models.Domain+VolunteerInbox", b =>
-                {
-                    b.HasOne("GyanDyan.Models.Domain+StudentProfile", "StudentProfile")
-                        .WithMany("VolunteerInboxes")
-                        .HasForeignKey("StudentProfileId");
-
-                    b.HasOne("GyanDyan.Models.Domain+VolunteerProfile", "VolunteerProfile")
-                        .WithMany("VolunteerInboxes")
-                        .HasForeignKey("VolunteerProfileId");
-
-                    b.HasOne("GyanDyan.Models.Domain+VolunteerRequirement", "VolunteerRequirement")
-                        .WithMany("VolunteerInboxes")
-                        .HasForeignKey("VolunteerRequirementId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

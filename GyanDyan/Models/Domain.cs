@@ -29,6 +29,7 @@ namespace GyanDyan.Models
             public IList<StudentRequirement> StudentRequirements { get; set; }
             public IList<OneToOne> OneToOne { get; set; }
             public IList<Group> InGroupStudent { get; set; }
+            public List<VolunteerInbox> VolunteerInboxes { get; set; }
         }
 
         public class StudentRequirement
@@ -68,6 +69,7 @@ namespace GyanDyan.Models
             public EducationQualification EducationQualification { get; set; }
             public IList<VolunteerRequirement> VolunteerRequirements { get; set; }
             public IList<OneToOne> OneToOnes { get; set; }
+            public IList<VolunteerInbox> VolunteerInboxes { get; set; }
         }
 
         public class VolunteerRequirement
@@ -82,8 +84,10 @@ namespace GyanDyan.Models
             public Days EndDay { get; set; }
             public string StartTime { get; set; }
             public string EndTime { get; set; }
+            /*public int MaxLimit { get; set; }*/
             public OneToOne OneToOnes { get; set; }
-            public Group InGroupVolunteer { get; set; }
+            public List<Group> InGroupVolunteer { get; set; }
+            public List<VolunteerInbox> VolunteerInboxes { get; set; }
         }
 
         public class OneToOne
@@ -113,6 +117,18 @@ namespace GyanDyan.Models
             public int? VolunteerRequirementId { get; set; }
             public VolunteerRequirement VolunteerRequirement { get; set; }
             public int? StudentId { get; set; }
+            public StudentProfile StudentProfile { get; set; }
+        }
+
+        public class  VolunteerInbox
+        {
+            public int Id { get; set; }
+            public int VolunteerId { get; set; }
+            public VolunteerProfile VolunteerProfile { get; set; }
+            public int VolunteerRequirementId { get; set; }
+            public VolunteerRequirement VolunteerRequirement { get; set; }
+
+            public int StudentId { get; set; }
             public StudentProfile StudentProfile { get; set; }
         }
 

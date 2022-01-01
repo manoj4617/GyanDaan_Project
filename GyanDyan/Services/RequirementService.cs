@@ -8,6 +8,7 @@ using System;
 using System.Threading.Tasks;
 using static GyanDyan.Models.Domain;
 using GyanDyan.Exceptions;
+using System.Collections.Generic;
 
 namespace GyanDyan.Services
 {
@@ -67,11 +68,73 @@ namespace GyanDyan.Services
         }
 
         //Getting Student Requirements
+        public async Task<IEnumerable<StudentRequirement>> GetStudentRequirements(int studentId)
+        {
+            var requirements = await _studentContext.StudentRequirements.Where(id => id.StudentProfileId == studentId).ToListAsync();
 
+            return requirements;
+        }
         //Getting Volunteer Requirements
+        public async Task<IEnumerable<VolunteerRequirement>> GetVolunteerRequirements(int volunteerId)
+        {
+            var requirements = await _studentContext.VolunteerRequirements.Where(id => id.VolunteerProfileId == volunteerId).ToListAsync();
 
-      
+            return requirements;
+        }
 
+        //Gets the list of all the Volunteer Requirements except those in which 
+        //student is enrolled
+        public async Task<IEnumerable<VolunteerRequirement>> ShowAllVolunteerDetailsForStudent(int studentId)
+        {
+            //Query to get all the oneToOne classes in which the student is enrolled
+            var checkOneToOne =  _studentContext.OneToOneClass.Where(id => id.StudentId == studentId)
+                .Select(vid =>  vid.VolunteerRequirement)
+                .ToList();
+
+            //Query to get all the group classes in which the student is enrolled
+            var isInGroup = _studentContext.GroupsClass.Where(id => id.StudentId == studentId)
+               .Select(vid => vid.VolunteerRequirement)
+               .ToList();
+
+            //query to get all the requirements
+            var r = await _studentContext.VolunteerRequirements.ToListAsync();
+
+
+            if (isInGroup != null || checkOneToOne != null)
+            {
+                //here the requirements in which the student is enrolled are excluded
+                IEnumerable<VolunteerRequirement> requirement = r.Except(isInGroup);
+                requirement = requirement.Except(checkOneToOne);
+                return requirement;
+            }
+            return null;
+        }
+
+
+        //Gets the list of all the Student Requirements except those which the 
+        //Volunteer has accepted
+        public async Task<IEnumerable<StudentRequirement>> ShowAllStudentRequirment(int volunteerId)
+        {
+            //Query to get all the oneToOne classes in which the volunteer has accepted
+            var checkOneToOne = _studentContext.OneToOneClass.Where(id => id.VolunteerId == volunteerId)
+                .Select(vid => vid.StudentRequirement)
+                .ToList();
+
+            //Gets all the student requirements
+            var r = await _studentContext.StudentRequirements.ToListAsync();
+
+
+            if (checkOneToOne != null)
+            {
+                //excludes the student requirements those which the volunteer has already accepted
+                IEnumerable<StudentRequirement> requirement = r.Except(checkOneToOne);
+                return requirement;
+            }
+            return null;
+
+        }
+
+       
         #region PRIVATE HELPER METHODS
 
         //This query gets all the student requirement for the particular studnet 
