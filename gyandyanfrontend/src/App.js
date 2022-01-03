@@ -1,10 +1,12 @@
 
-import Navbar from './Components/Navbar';
+import NavbarItem from './Components/Navbar.jsx';
+import Login from './Components/Login.jsx';
 
 function App() {
   return (
     <div className="App">
-      <Navbar />
+      <NavbarItem />
+      <Login />
     </div>
   );
 }

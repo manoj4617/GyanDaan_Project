@@ -47,7 +47,7 @@ namespace GyanDyan.Models
             public TypeOfClass TypeOfClass { get; set; }
             public bool AcceptedByVolunteer { get; set; }
             public OneToOne OneToOne { get; set; }
-
+            public Group Group { get; set; }
         }
 
         public class VolunteerProfile
@@ -116,6 +116,8 @@ namespace GyanDyan.Models
             public int Id { get; set; }
             public int? VolunteerRequirementId { get; set; }
             public VolunteerRequirement VolunteerRequirement { get; set; }
+            public int?  StudentRequirementId { get; set; }
+            public StudentRequirement StudentRequirement { get; set; }
             public int? StudentId { get; set; }
             public StudentProfile StudentProfile { get; set; }
         }

@@ -34,6 +34,17 @@ namespace GyanDyan
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+
+            services.AddCors(options => {
+                options.AddPolicy(StaticProvider.FrontendCorsPolicy, builder => {
+                    builder.WithOrigins(
+                            Configuration.GetSection(StaticProvider.AllowedOrigins).Get<string[]>()
+                            )
+                        .AllowAnyMethod()
+                        .AllowAnyHeader();
+                });
+            });
+
             services.AddDbContext<Context>(
                 options => options.UseSqlServer(Configuration.GetConnectionString("SqlServer")));
             services.AddScoped<IUserService, UserServices>();

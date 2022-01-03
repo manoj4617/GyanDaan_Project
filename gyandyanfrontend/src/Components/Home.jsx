@@ -1,12 +1,13 @@
 import React from 'react'
 
-export default function Home() {
+export default function Login() {
     return (
-        <> 
-            <div>
+        <>
+            <div className='ms-auto'>
                 
             </div>
         </>
-       
+        
+
     )
 }

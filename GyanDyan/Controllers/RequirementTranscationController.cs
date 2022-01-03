@@ -48,5 +48,12 @@ namespace GyanDyan.Controllers
         {
             return await _requirementTranscation.GetAllNotificationsForVolunteer(reqid);
         }
+
+        [Authorize(Policy = StaticProvider.VolunteerPolicy)]
+        [HttpGet("accept-student-request/{studentRequirementId}/{volunteerId}")]
+        public async Task<string> AcceptStudentRequirement(int studentRequirementId, int volunteerId)
+        {
+            return await _requirementTranscation.AcceptStudentRequirement(studentRequirementId, volunteerId);
+        }
     }
 }
