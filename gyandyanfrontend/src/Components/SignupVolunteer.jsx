@@ -1,55 +1,21 @@
 import React, { useState } from 'react'
 import { useFormik } from "formik";
-import * as Yup from "yup";
 import Select from 'react-select'
-import stylingObject from './style';
+import { genderOptions,educationQualification,validationSchema } from './Form';
 
 export default function SignupVolunteer() {
 
-    const genderOptions = [
-        { value: "Male", label: "Male" },
-        { value: "Female", label: "Female" },
-        { value: "Other", label: "Other" },
-      ];
-
-    const educationQualification =[
-        {value:"Graduate", label:"Graduate"},
-        {value:"UnderGraduate", label:"Under Graduate"},
-        {value:"PostGraduate", label:"Post Graduate"},
-    ]
-
-    const validationSchema = Yup.object().shape({
-        firstName: Yup.string()
-            .required('Required'),
-        lastName: Yup.string()
-            .required('Required'),
-        email: Yup.string()
-            .email('Invalid email address')
-            .required('Required'),
-        password: Yup.string()
-            .required('Required')
-            .min(8, 'Password must be at least 8 characters')
-            .matches("^.*(?=.{8,})(?=.*[a-zA-Z])(?=.*\\d)(?=.*[!#$@%&? \"]).*$", 'Password must contain at least one letter, one number and one special character'),
-        confirmPassword: Yup.string()
-            .required('Required')
-            .oneOf([Yup.ref('password'), null], 'Passwords must match'),
-        dateOfBirth: Yup.string()
-            .required('Required'),
-        phoneNumber: Yup.string()
-            .required('Required'),
-        street: Yup.string(),
-        city: Yup.string().required('Required'),
-        state: Yup.string().required('Required'),   
-        zip: Yup.string().required('Required'), 
-    });   
 
     const formik = useFormik({
         initialValues: {
-            firstName: '',  
-            lastName: '',
+            firstname: '',  
+            lastname: '',
             email: '',
+            gender:'',
             password: '',
+            confirmPassword: '',
             dateOfBirth: '',
+            educationQualification:'',
             phoneNumber: '',
             street: '',
             city: '',
@@ -68,12 +34,12 @@ export default function SignupVolunteer() {
 
     return (
         <>
-            <div className='w-50 p-3 auto mx-auto my-auto shadow-lg p-3 mb-5 bg-warning rounded'>
-            <h3>Volunteer Login Form</h3>
+            <div className='forms w-50 p-3 auto mx-auto my-auto mb-5'>
+            <h3>Student Login Form</h3>
               <hr />
-              <form onSubmit={formik.handleSubmit}  className='p-2 m-4'>
-              <div class="row">
-              <div class="col-md-6 mb-4">
+              <form onSubmit={formik.handleSubmit} className='p-2 m-4'>
+              <div className="row">
+              <div className="col-md-6 mb-4">
                 <div className="form-group my-2 w-100">
                     {/* FirstName */}
                     <label htmlFor="firstname">First Name</label>
@@ -90,7 +56,7 @@ export default function SignupVolunteer() {
                     ) : null}
                     </div>
                 </div>
-                <div class="col-md-6 mb-4">
+                <div className="col-md-6 mb-4">
                     <div className="form-group my-2 w-100">
                     {/* Last Name */}
                     <label htmlFor="lastname">Last Name</label>
@@ -102,14 +68,14 @@ export default function SignupVolunteer() {
                         value={formik.values.lastname}
                         onBlur={formik.handleBlur}
                     />
-                    {formik.touched.email && formik.errors.lastname ? (
+                    {formik.touched.lastname && formik.errors.lastname ? (
                         <p className="text-danger">Lastname is required</p>
                     ) : null}
                     </div>
                     </div>
                 </div>
-                <div class="row">
-                    <div class="col-md-6 mb-4">
+                <div className="row">
+                    <div className="col-md-6 mb-4">
                         <div className="form-group my-2 w-100">
                         {/* Email */}
                         <label htmlFor="email">Email</label>
@@ -126,7 +92,7 @@ export default function SignupVolunteer() {
                         ) : null}
                         </div>
                         </div>
-                    <div class="col-md-6 mb-4">
+                    <div className="col-md-6 mb-4">
                         {/* Phone Number */}
                         <div className="form-group my-2">
                             <label htmlFor="phoneNumber">Phone Number</label>
@@ -144,8 +110,8 @@ export default function SignupVolunteer() {
                         </div>
                     </div>
                     </div>
-                    <div class="row">
-                        <div class="col-md-6 mb-4">
+                    <div className="row">
+                        <div className="col-md-6 mb-4">
                         {/* Password */}
                             <div className="form-group my-2">
                             <label htmlFor="password">Password</label>
@@ -162,7 +128,7 @@ export default function SignupVolunteer() {
                             ) : null}
                             </div>
                             </div>
-                            <div class="col-md-6 mb-4">
+                            <div className="col-md-6 mb-4">
                         {/* Confirm Password */}
                         <div className="form-group my-2">
                         <label htmlFor="confirmPassword">Confirm Password</label>
@@ -180,11 +146,11 @@ export default function SignupVolunteer() {
                         </div>
                         </div>
                 </div>
-                <div class="row">
-                    <div class="col-md-6 mb-4">
+                <div className="row">
+                    <div className="col-md-6 mb-4">
                     {/* Gender */}
-                    <div class="form-group my-2 bd-highlight">
-                        <div class="p-2 flex-fill bd-highlight">
+                    <div className="form-group my-2">
+                        <div className="p-2 flex-fill bd-highlight">
                         <div className="form-group">
                             <label htmlFor="gender">Select gender</label>
                             <Select
@@ -199,7 +165,7 @@ export default function SignupVolunteer() {
                         </div>
                 </div>
                 </div>
-                <div class="col-md-6 mb-4">
+                <div className="col-md-6 mb-4">
                     {/* Date of Birth */}
                     <div className="form-group my-2">
                         <label htmlFor="dateOfBirth">Date of Birth</label>
@@ -218,8 +184,8 @@ export default function SignupVolunteer() {
                     </div>
                 </div>
                 {/* EducationQualification */}
-                <div class="form-group my-2 bd-highlight">
-                    <div class="p-2 flex-fill bd-highlight">
+                <div className="form-group my-2">
+                    <div className="p-2 flex-fill bd-highlight">
                     <div className="form-group">
                         <label htmlFor="educationQualification">Select Education Qualification</label>
                         <Select
@@ -234,8 +200,8 @@ export default function SignupVolunteer() {
                     </div>
                 </div>
                 
-                <div class="row">
-                    <div class="col-md-6 mb-4">
+                <div className="row">
+                    <div className="col-md-6 mb-4">
                 {/* Street */}
                 <div className="form-group my-2">
                     <label htmlFor="street">Street</label>
@@ -253,7 +219,7 @@ export default function SignupVolunteer() {
                 </div>
                 </div>
                 {/* City */}
-                <div class="col-md-6 mb-4">
+                <div className="col-md-6 mb-4">
                 <div className="form-group my-2">
                     <label htmlFor="city">City</label>
                     <input
@@ -270,9 +236,9 @@ export default function SignupVolunteer() {
                 </div>
                 </div>
                 </div>
-                <div class="row">
+                <div className="row">
                 {/* State */}
-                <div class="col-md-6 mb-4">
+                <div className="col-md-6 mb-4">
                 <div className="form-group my-2">
                     <label htmlFor="state">State</label>
                     <input
@@ -288,20 +254,20 @@ export default function SignupVolunteer() {
                     ) : null}
                 </div>
                 </div>
-                <div class="col-md-6 mb-4">
+                <div className="col-md-6 mb-4">
                 
                 {/* Zip Code */}
                 <div className="form-group my-2">
-                    <label htmlFor="zipCode">Zip Code</label>
+                    <label htmlFor="zip">Zip Code</label>
                     <input
                         type="text"
                         className="form-control"
-                        name="zipCode"
+                        name="zip"
                         onChange={formik.handleChange}
-                        value={formik.values.zipCode}
+                        value={formik.values.zip}
                         onBlur={formik.handleBlur}
                     />
-                    {formik.touched.zipCode && formik.errors.zipCode ? (
+                    {formik.touched.zip && formik.errors.zip ? (
                         <p className="text-danger">Zip Code is required</p>
                     ) : null}
                 </div>

@@ -1,27 +1,17 @@
 import React from 'react'
 import { useFormik } from 'formik'
-import * as Yup from 'yup'
+import {loginValidationSchema} from './Form'
+
 
 
 export default function LoginVolunteer() {
-
-    const validationSchema = Yup.object().shape({
-        email: Yup.string()
-            .email('Invalid email address')
-            .required('Required'),
-        password: Yup.string()
-            .required('Required')
-            .min(8, 'Password must be at least 8 characters')
-            .matches("^.*(?=.{8,})(?=.*[a-zA-Z])(?=.*\\d)(?=.*[!#$@%&? \"]).*$", 'Password must contain at least one letter, one number and one special character')
-    });
-
 
     const formik = useFormik({
         initialValues: {
             email: '',
             password: ''
         },
-        validationSchema: validationSchema,
+        validationSchema: loginValidationSchema,
         onSubmit: values => {
             console.log(values)
             
@@ -31,7 +21,7 @@ export default function LoginVolunteer() {
 
     return (
         <> 
-            <div className='w-50 p-3 auto mx-auto my-auto border border-success rounded-1'>
+            <div className='forms w-50 p-3 auto mx-auto my-auto'>
             <h3>Volunteer Login Form</h3>
               <hr />
               <form onSubmit={formik.handleSubmit} className='p-2 m-4'>
