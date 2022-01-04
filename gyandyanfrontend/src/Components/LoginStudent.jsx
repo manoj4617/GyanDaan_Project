@@ -3,7 +3,7 @@ import { useFormik } from 'formik'
 import * as Yup from 'yup'
 
 
-export default function Home() {
+export default function LoginStudent() {
 
     const validationSchema = Yup.object().shape({
         email: Yup.string()
@@ -31,11 +31,11 @@ export default function Home() {
 
     return (
         <> 
-            <div className='w-25 p-3 auto'>
-            <h3>Login Form</h3>
+            <div className='w-50 p-3 auto mx-auto my-auto border border-success rounded-1'>
+            <h3>Student Login Form</h3>
               <hr />
-              <form onSubmit={formik.handleSubmit}>
-                <div className="form-group">
+              <form onSubmit={formik.handleSubmit} className='p-2 m-4'>
+                <div className="form-group my-2 w-100">
                   {/* Username */}
                   <label htmlFor="email">Email</label>
                   <input
@@ -51,7 +51,7 @@ export default function Home() {
                   ) : null}
                 </div>
                   {/* Password */}
-                <div className="form-group">
+                <div className="form-group my-2">
                   <label htmlFor="password">Password</label>
                   <input
                     type="password"

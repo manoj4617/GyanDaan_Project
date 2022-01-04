@@ -1,13 +1,16 @@
-
 import NavbarItem from './Components/Navbar.jsx';
-import Login from './Components/Login.jsx';
+import Container from './Components/Container.jsx';
+import { BrowserRouter } from 'react-router-dom';
+
 
 function App() {
   return (
-    <div className="App">
-      <NavbarItem />
-      <Login />
-    </div>
+    <>
+      <BrowserRouter>
+        <NavbarItem />
+        <Container />
+      </BrowserRouter>
+    </>
   );
 }
 

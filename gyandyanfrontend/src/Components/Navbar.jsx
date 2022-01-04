@@ -10,9 +10,9 @@ export default function NavbarItem() {
                 <Navbar.Toggle aria-controls="basic-navbar-nav" />
                 <Navbar.Collapse id="basic-navbar-nav">
                 <Nav className="fs-3 text-secondary ms-auto">
-                    <Nav.Link className="text-secondary" href="#home">Home</Nav.Link>
-                    <Nav.Link className="text-secondary" href="#link">Login</Nav.Link>
-                    <Nav.Link className="text-secondary" href="#link">Sign Up</Nav.Link>
+                    <Nav.Link className="text-secondary" href="/">Home</Nav.Link>
+                    <Nav.Link className="text-secondary" href="/login">Login</Nav.Link>
+                    <Nav.Link className="text-secondary" href="/signup">Sign Up</Nav.Link>
                     <Nav.Link className="text-secondary" href="#link">About</Nav.Link>
                 </Nav>
                 </Navbar.Collapse>
