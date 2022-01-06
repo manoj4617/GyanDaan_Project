@@ -37,14 +37,19 @@ export const validationSchema = Yup.object().shape({
     confirmPassword: Yup.string()
         .required('Required')
         .oneOf([Yup.ref('password'), null], 'Passwords must match'),
+    gender: Yup.string()
+        .required("Required"),
+    educationQualification: Yup.string()
+        .required("Required"),
     dateOfBirth: Yup.string()
         .required('Required'),
-    phoneNumber: Yup.string()
-        .required('Required'),
+    phoneNumber: Yup.number()
+        .required('Required')
+        .min(10, 'Phone number must be at least 10 digits'),
     street: Yup.string(),
     city: Yup.string().required('Required'),
     state: Yup.string().required('Required'),   
-    zip: Yup.string().required('Required'), 
+    zip: Yup.number().required('Required'), 
 });   
 
 

@@ -1,7 +1,7 @@
-import React, { useState } from 'react'
 import { useFormik } from "formik";
-import Select from 'react-select'
 import { genderOptions,educationQualification,validationSchema } from './Form';
+import {GenderSelect,EducationQualification} from './FormSelect/SelectOptions'
+
 
 export default function SignupVolunteer() {
 
@@ -27,10 +27,6 @@ export default function SignupVolunteer() {
             console.log(values)
         }
     });
-
-    const [selectedGenderOption, setSelectedGenderOption] = useState([]);
-    const [selectedEducation, setselectedEducation] = useState([]);
-
 
     return (
         <>
@@ -153,14 +149,13 @@ export default function SignupVolunteer() {
                         <div className="p-2 flex-fill bd-highlight">
                         <div className="form-group">
                             <label htmlFor="gender">Select gender</label>
-                            <Select
-                            id="gender"
-                            name="gender"
-                            className="my-2"
-                            value={selectedGenderOption}
-                            onChange={setSelectedGenderOption}
-                            options={genderOptions}
-                            />
+                            <GenderSelect
+                                className='input'
+                                onChange={value=>formik.setFieldValue('gender',value.value)}
+                                value={formik.values.gender}
+                                options={genderOptions}
+                                />
+                            {formik.errors.job ? <div className='error'>{formik.errors.job}</div> : null}
                         </div>
                         </div>
                 </div>
@@ -188,14 +183,13 @@ export default function SignupVolunteer() {
                     <div className="p-2 flex-fill bd-highlight">
                     <div className="form-group">
                         <label htmlFor="educationQualification">Select Education Qualification</label>
-                        <Select
-                        id="educationQualification"
-                        name="educationQualification"
-                        className="my-2"
-                        value={selectedEducation}
-                        onChange={setselectedEducation}
-                        options={educationQualification}
-                        />
+                        <EducationQualification
+                                className='input'
+                                onChange={value=>formik.setFieldValue('educationQualification',value.value)}
+                                value={formik.values.educationQualification}
+                                options={educationQualification}
+                                />
+                            {formik.errors.job ? <div className='error'>{formik.errors.educationQualification}</div> : null}
                     </div>
                     </div>
                 </div>
