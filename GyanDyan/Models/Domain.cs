@@ -161,7 +161,8 @@ namespace GyanDyan.Models
         public enum Gender
         {
             Female,
-            Male
+            Male,
+            Other
         }
         #endregion
     }

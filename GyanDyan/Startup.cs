@@ -82,7 +82,7 @@ namespace GyanDyan
             app.UseAuthentication();
 
             app.UseRouting();
-
+            app.UseCors(StaticProvider.FrontendCorsPolicy);
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>

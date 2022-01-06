@@ -20,15 +20,13 @@ namespace GyanDyan.Controllers
         [HttpPost("register-student")]
         public async Task<IActionResult> RegisterStudnet(StudentRegisterViewModel studentRegisterView)
         {
-            await _userService.StudentRegister(studentRegisterView);
-            return Ok("Registration was successful");
+            return Ok(await _userService.StudentRegister(studentRegisterView));
         }
 
         [HttpPost("register-volunteer")]
         public async Task<IActionResult> RegisterVolunteer(VolunteerRegisterViewModel volunteerRegisterView)
-        {
-            await _userService.VolunteerRegister(volunteerRegisterView);
-            return Ok("Registration was successful");
+        { 
+            return Ok(await _userService.VolunteerRegister(volunteerRegisterView));
         }
 
         [HttpPost("student-login")]

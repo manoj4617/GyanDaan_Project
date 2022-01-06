@@ -1,38 +1,47 @@
 import { useFormik } from "formik";
 import { genderOptions,educationQualification,validationSchema } from './Form';
 import {GenderSelect,EducationQualification} from './FormSelect/SelectOptions'
+import {httpClient} from '../http/httpclient'
+import { useNavigate } from 'react-router';
 
+export default function SignupVolunteer(props) {
 
-
-export default function SignupStudnet() {
-
-
+    const history = useNavigate();
     const formik = useFormik({
         initialValues: {
-            firstname: '',  
-            lastname: '',
+            firstName: '',  
+            lastName: '',
             email: '',
             gender:'',
             password: '',
             confirmPassword: '',
             dateOfBirth: '',
             educationQualification:'',
-            phoneNumber: '',
+            mobileNumber: '',
             street: '',
             city: '',
             state: '',
-            zip: '',
+            pin: '',
         },
         validationSchema: validationSchema,
         onSubmit: values => {
+            delete values.confirmPassword;
             console.log(values)
+            httpClient.post("user/register-student", values).then((res) => {
+                console.log(res)
+                let role = "student";
+                let message = res.data;
+                history(`/login/${role}/${message}`);
+              })
+              .catch((error)=>{
+                  console.log(error)
+              });
         }
     });
-    
 
     return (
         <>
-            <div className='forms container-fluid w-50 p-3 auto mx-auto my-auto mb-5'>
+            <div className='forms w-50 p-3 auto mx-auto my-auto mb-5'>
             <h3>Student Login Form</h3>
               <hr />
               <form onSubmit={formik.handleSubmit} className='p-2 m-4'>
@@ -40,16 +49,16 @@ export default function SignupStudnet() {
               <div className="col-md-6 mb-4">
                 <div className="form-group my-2 w-100">
                     {/* FirstName */}
-                    <label htmlFor="firstname">First Name</label>
+                    <label htmlFor="firstName">First Name</label>
                     <input
                         type="text"
                         className="form-control"
-                        name="firstname"
+                        name="firstName"
                         onChange={formik.handleChange}
-                        value={formik.values.firstname}
+                        value={formik.values.firstName}
                         onBlur={formik.handleBlur}
                     />
-                    {formik.touched.firstname && formik.errors.firstname ? (
+                    {formik.touched.firstName && formik.errors.firstName ? (
                         <p className="text-danger">Firstname is required</p>
                     ) : null}
                     </div>
@@ -57,16 +66,16 @@ export default function SignupStudnet() {
                 <div className="col-md-6 mb-4">
                     <div className="form-group my-2 w-100">
                     {/* Last Name */}
-                    <label htmlFor="lastname">Last Name</label>
+                    <label htmlFor="lastName">Last Name</label>
                     <input
                         type="text"
                         className="form-control"
-                        name="lastname"
+                        name="lastName"
                         onChange={formik.handleChange}
-                        value={formik.values.lastname}
+                        value={formik.values.lastName}
                         onBlur={formik.handleBlur}
                     />
-                    {formik.touched.lastname && formik.errors.lastname ? (
+                    {formik.touched.lastName && formik.errors.lastName ? (
                         <p className="text-danger">Lastname is required</p>
                     ) : null}
                     </div>
@@ -93,16 +102,16 @@ export default function SignupStudnet() {
                     <div className="col-md-6 mb-4">
                         {/* Phone Number */}
                         <div className="form-group my-2">
-                            <label htmlFor="phoneNumber">Phone Number</label>
+                            <label htmlFor="mobileNumber">Phone Number</label>
                             <input
                                 type="text"
                                 className="form-control"
-                                name="phoneNumber"
+                                name="mobileNumber"
                                 onChange={formik.handleChange}
-                                value={formik.values.phoneNumber}
+                                value={formik.values.mobileNumber}
                                 onBlur={formik.handleBlur}
                             />
-                            {formik.touched.phoneNumber && formik.errors.phoneNumber ? (
+                            {formik.touched.mobileNumber && formik.errors.mobileNumber ? (
                                 <p className="text-danger">Phone Number is required</p>
                             ) : null}
                         </div>
@@ -147,18 +156,17 @@ export default function SignupStudnet() {
                 <div className="row">
                     <div className="col-md-6 mb-4">
                     {/* Gender */}
-                    <div className="form-group my-2 bd-highlight">
+                    <div className="form-group my-2">
                         <div className="p-2 flex-fill bd-highlight">
                         <div className="form-group">
                             <label htmlFor="gender">Select gender</label>
-                             <GenderSelect
+                            <GenderSelect
                                 className='input'
                                 onChange={value=>formik.setFieldValue('gender',value.value)}
                                 value={formik.values.gender}
                                 options={genderOptions}
                                 />
                             {formik.errors.job ? <div className='error'>{formik.errors.job}</div> : null}
-                            
                         </div>
                         </div>
                 </div>
@@ -182,7 +190,7 @@ export default function SignupStudnet() {
                     </div>
                 </div>
                 {/* EducationQualification */}
-                <div className="form-group my-2 bd-highlight">
+                <div className="form-group my-2">
                     <div className="p-2 flex-fill bd-highlight">
                     <div className="form-group">
                         <label htmlFor="educationQualification">Select Education Qualification</label>
@@ -255,16 +263,16 @@ export default function SignupStudnet() {
                 
                 {/* Zip Code */}
                 <div className="form-group my-2">
-                    <label htmlFor="zip">Zip Code</label>
+                    <label htmlFor="pin">Zip Code</label>
                     <input
-                        type="text"
+                        type="number"
                         className="form-control"
-                        name="zip"
+                        name="pin"
                         onChange={formik.handleChange}
-                        value={formik.values.zip}
+                        value={formik.values.pin}
                         onBlur={formik.handleBlur}
                     />
-                    {formik.touched.zip && formik.errors.zip ? (
+                    {formik.touched.pin && formik.errors.pin ? (
                         <p className="text-danger">Zip Code is required</p>
                     ) : null}
                 </div>

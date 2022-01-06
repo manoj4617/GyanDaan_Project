@@ -18,14 +18,12 @@ export const loginValidationSchema = Yup.object().shape({
         .required('Required'),
     password: Yup.string()
         .required('Required')
-        .min(8, 'Password must be at least 8 characters')
-        .matches("^.*(?=.{8,})(?=.*[a-zA-Z])(?=.*\\d)(?=.*[!#$@%&? \"]).*$", 'Password must contain at least one letter, one number and one special character')
 });
 
 export const validationSchema = Yup.object().shape({
-    firstname: Yup.string()
+    firstName: Yup.string()
         .required('Required'),
-    lastname: Yup.string()
+    lastName: Yup.string()
         .required('Required'),
     email: Yup.string()
         .email('Invalid email address')
@@ -43,13 +41,13 @@ export const validationSchema = Yup.object().shape({
         .required("Required"),
     dateOfBirth: Yup.string()
         .required('Required'),
-    phoneNumber: Yup.number()
+    mobileNumber: Yup.string()
         .required('Required')
         .min(10, 'Phone number must be at least 10 digits'),
     street: Yup.string(),
     city: Yup.string().required('Required'),
     state: Yup.string().required('Required'),   
-    zip: Yup.number().required('Required'), 
+    pin: Yup.number().required('Required'), 
 });   
 
 
