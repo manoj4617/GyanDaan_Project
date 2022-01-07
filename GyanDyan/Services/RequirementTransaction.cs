@@ -126,7 +126,7 @@ namespace GyanDyan.Services
                 var addNewStudent = new OneToOne()
                 {
                     StudentRequirementId = studentRequirementId,
-                    VolunteerId = volunteerId
+                    VolunteerProfileId = volunteerId
                 };
                 getStudentTypeOfClass.AcceptedByVolunteer = true;
                 await _context.OneToOneClass.AddAsync(addNewStudent);

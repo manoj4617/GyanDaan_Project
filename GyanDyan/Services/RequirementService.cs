@@ -29,10 +29,11 @@ namespace GyanDyan.Services
             //which have same timings so that the requirements timing dont clash
             await CheckIfStudentDaysClash(requirementViewModel);
           
+
             var newStudentRequirement = new StudentRequirement()
             {
                 StudentProfileId = requirementViewModel.StudentProfileId,
-                PostedOnDate = DateTime.Now,
+                PostedOnDate = GetDateTime().ToString("yyyy - MM - dd HH: mm:ss"),
                 StartDay = (Days)Enum.Parse(typeof(Days),requirementViewModel.StartDay),
                 EndDay = (Days)Enum.Parse(typeof(Days), requirementViewModel.EndDay),
                 StartTime = requirementViewModel.StartTime,
@@ -49,11 +50,10 @@ namespace GyanDyan.Services
         public async Task AddNewVolunteerRequirement(VolunteerRequirementViewModel requirementViewModel)
         {
             await CheckIfVolunteerDaysClash(requirementViewModel);
-
             var newVolunteerRequirement = new VolunteerRequirement()
             {
                 VolunteerProfileId = requirementViewModel.VolunteerProfileId,
-                PostedOnDate = DateTime.Now,
+                PostedOnDate = GetDateTime().ToString("yyyy - MM - dd HH: mm:ss"),
                 StartDay = (Days)Enum.Parse(typeof(Days), requirementViewModel.StartDay),
                 EndDay = (Days)Enum.Parse(typeof(Days), requirementViewModel.EndDay),
                 StartTime = requirementViewModel.StartTime,
@@ -70,14 +70,23 @@ namespace GyanDyan.Services
         //Getting Student Requirements
         public async Task<IEnumerable<StudentRequirement>> GetStudentRequirements(int studentId)
         {
-            var requirements = await _studentContext.StudentRequirements.Where(id => id.StudentProfileId == studentId).ToListAsync();
+            var requirements = await _studentContext.StudentRequirements.Where(id => id.StudentProfileId == studentId)
+                .Include(i => i.OneToOne)
+                .ThenInclude(i => i.VolunteerProfile)
+                .Include(i => i.Group)
+                .ThenInclude(i => i.VolunteerRequirement)
+                .ThenInclude(i => i.VolunteerProfile)
+                .ToListAsync();
 
             return requirements;
         }
         //Getting Volunteer Requirements
         public async Task<IEnumerable<VolunteerRequirement>> GetVolunteerRequirements(int volunteerId)
         {
-            var requirements = await _studentContext.VolunteerRequirements.Where(id => id.VolunteerProfileId == volunteerId).ToListAsync();
+            var requirements = await _studentContext.VolunteerRequirements.Where(id => id.VolunteerProfileId == volunteerId)
+                .Include(i => i.OneToOnes)
+                .Include(i => i.InGroupVolunteer)
+                .ToListAsync();
 
             return requirements;
         }
@@ -116,7 +125,7 @@ namespace GyanDyan.Services
         public async Task<IEnumerable<StudentRequirement>> ShowAllStudentRequirment(int volunteerId)
         {
             //Query to get all the oneToOne classes in which the volunteer has accepted
-            var checkOneToOne = _studentContext.OneToOneClass.Where(id => id.VolunteerId == volunteerId)
+            var checkOneToOne = _studentContext.OneToOneClass.Where(id => id.VolunteerProfileId == volunteerId)
                 .Select(vid => vid.StudentRequirement)
                 .ToList();
 
@@ -192,6 +201,15 @@ namespace GyanDyan.Services
             }
         }
 
+        private DateTime GetDateTime()
+        {
+            DateTime serverTime = DateTime.Now; 
+            DateTime utcTime = serverTime.ToUniversalTime(); 
+
+            TimeZoneInfo tzi = TimeZoneInfo.FindSystemTimeZoneById("India Standard Time");
+            DateTime localTime = TimeZoneInfo.ConvertTimeFromUtc(utcTime, tzi);
+            return localTime;
+        }
         private void SaveChangesToDB()
         {
             _studentContext.SaveChanges();

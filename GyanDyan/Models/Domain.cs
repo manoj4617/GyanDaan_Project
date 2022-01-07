@@ -37,7 +37,7 @@ namespace GyanDyan.Models
             public int Id { get; set; }
             public int StudentProfileId { get; set; }
             public StudentProfile StudentProfile { get; set; }
-            public DateTime PostedOnDate { get; set; }
+            public string PostedOnDate { get; set; }
             public Days StartDay { get; set; }
             public Days EndDay { get; set; }
             public string StartTime { get; set; }
@@ -67,9 +67,9 @@ namespace GyanDyan.Models
             public string State { get; set; }
             public long Pin { get; set; }
             public EducationQualification EducationQualification { get; set; }
-            public IList<VolunteerRequirement> VolunteerRequirements { get; set; }
-            public IList<OneToOne> OneToOnes { get; set; }
-            public IList<VolunteerInbox> VolunteerInboxes { get; set; }
+            public List<VolunteerRequirement> VolunteerRequirements { get; set; }
+            public List<OneToOne> OneToOnes { get; set; }
+            public List<VolunteerInbox> VolunteerInboxes { get; set; }
         }
 
         public class VolunteerRequirement
@@ -77,7 +77,7 @@ namespace GyanDyan.Models
             public int Id { get; set; }
             public int VolunteerProfileId { get; set; }
             public VolunteerProfile VolunteerProfile { get; set; }
-            public DateTime PostedOnDate { get; set; }
+            public string PostedOnDate { get; set; }
             public string AreaOfSpecialization { get; set; }
             public TypeOfClass TypeOfClass { get; set; }
             public Days StartDay { get; set; }
@@ -103,7 +103,7 @@ namespace GyanDyan.Models
             public StudentRequirement StudentRequirement { get; set; }
 
             //Populated when Student posts the request
-            public int? VolunteerId { get; set; }
+            public int? VolunteerProfileId { get; set; }
             public VolunteerProfile VolunteerProfile { get; set; }
 
             //Populated when volunteer posts the request
