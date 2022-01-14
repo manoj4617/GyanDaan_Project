@@ -42,6 +42,7 @@ namespace GyanDyan.Models
             public Days EndDay { get; set; }
             public string StartTime { get; set; }
             public string EndTime { get; set; }
+            public string Subject { get; set; }
             public string Topic { get; set; }
             public DateTime TimeOfStart { get; set; }
             public TypeOfClass TypeOfClass { get; set; }
@@ -78,7 +79,8 @@ namespace GyanDyan.Models
             public int VolunteerProfileId { get; set; }
             public VolunteerProfile VolunteerProfile { get; set; }
             public string PostedOnDate { get; set; }
-            public string AreaOfSpecialization { get; set; }
+            public string Subject { get; set; }
+            public string Topic { get; set; }
             public TypeOfClass TypeOfClass { get; set; }
             public Days StartDay { get; set; }
             public Days EndDay { get; set; }

@@ -8,7 +8,7 @@ export default function NavbarItem() {
 
     const dispatch = useDispatch();
     const handleLogout = () => {
-        sessionStorage.removeItem('token');
+        localStorage.removeItem('token');
         dispatch(authSlice.actions.logout());
       };
 
@@ -29,7 +29,10 @@ export default function NavbarItem() {
                         </>
                      : null }
                     {authStatus.isLoggedin ? 
+                        <>
+                            <Nav.Link className="text-white" href="/requirement">Add New Requirement</Nav.Link>
                             <Nav.Link className="text-white" onClick={handleLogout} href="/logout">Logout</Nav.Link>
+                        </>
                     : null}
 
                     <Nav.Link className="text-white" href="#link">About</Nav.Link>

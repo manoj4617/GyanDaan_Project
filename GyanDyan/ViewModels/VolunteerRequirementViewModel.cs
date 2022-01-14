@@ -5,8 +5,6 @@ namespace GyanDyan.ViewModels
     public class VolunteerRequirementViewModel : DateTimeViewModel
     {
         [Required]
-        public int VolunteerProfileId { get; set; }
-        [Required]
-        public string AreaOfspecialization { get; set; }
+        public int ProfileId { get; set; }
     }
 }

@@ -51,9 +51,16 @@ namespace GyanDyan.Controllers
 
         [Authorize(Policy = StaticProvider.VolunteerPolicy)]
         [HttpGet("accept-student-request/{studentRequirementId}/{volunteerId}")]
-        public async Task<string> AcceptStudentRequirement(int studentRequirementId, int volunteerId)
+        public async Task<List<VolunteerRequirement>> AcceptStudentRequirement(int studentRequirementId, int volunteerId)
         {
             return await _requirementTranscation.AcceptStudentRequirement(studentRequirementId, volunteerId);
+        }
+
+        [Authorize(Policy = StaticProvider.StudentPolicy)]
+        [HttpGet("get-pending/{studentId}")]
+        public async Task<List<VolunteerInbox>> GetVolunteerReqForStudent(int studentId)
+        {
+            return await _requirementTranscation.GetReqListForStudents(studentId);
         }
     }
 }

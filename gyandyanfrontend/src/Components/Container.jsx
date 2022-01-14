@@ -6,6 +6,7 @@ import CommonSignup from './CommonSignup';
 import StudentDashBoard from './StudentDashBoard';
 import VolunteerDashBoard from './VolunteerDashBoard';
 import JustLogin from './JustLogin'
+import RequirementAdding from './RequirementAdding';
 
 import React from 'react'
 
@@ -18,7 +19,7 @@ export default function Container() {
                     <Route path='/login/:role/:message' element={<LoginAfterSignUp/>} />
                     <Route path='/login' element={<JustLogin/>} />
                     <Route path='/signup' element={<CommonSignup/>} />
-                    <Route path='/logout' element={<Home/>} />
+                    <Route path='/logout' element={<JustLogin/>} />
                     <Route path='/student-dash' element={
                             <PrivateRoute>
                                 <StudentDashBoard/>
@@ -28,6 +29,12 @@ export default function Container() {
                     <Route path='/volunteer-dash' element={
                             <PrivateRoute>
                                 <VolunteerDashBoard/>
+                            </PrivateRoute>
+                        }>    
+                    </Route>
+                    <Route path='/requirement' element={
+                            <PrivateRoute>
+                                <RequirementAdding/>
                             </PrivateRoute>
                         }>    
                     </Route>

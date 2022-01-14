@@ -97,7 +97,7 @@ namespace GyanDyan.Services
                  .ToListAsync();
         }
 
-        public async Task<string> AcceptStudentRequirement(int studentRequirementId, int volunteerId)
+        public async Task<List<VolunteerRequirement>> AcceptStudentRequirement(int studentRequirementId, int volunteerId)
         {
             var getStudentTypeOfClass = _context.StudentRequirements
                 .Where(rid => rid.Id == studentRequirementId)
@@ -105,23 +105,20 @@ namespace GyanDyan.Services
 
             var volunteerRequirement = await _context.VolunteerRequirements
                 .Where(id => id.VolunteerProfileId == volunteerId
-                    && id.AreaOfSpecialization == getStudentTypeOfClass.Topic)
-                    .FirstOrDefaultAsync();
-            
+                        && id.Subject == getStudentTypeOfClass.Subject 
+                        || id.Topic == getStudentTypeOfClass.Topic)
+                    .ToListAsync();
+
             //If the volunteer trying to admit the student does not have any class with the same topic as the student requirement
             //and same type of class the she/he cannot admit the studnet to the class
-            if(volunteerRequirement == null)
+            if (volunteerRequirement == null)
             {
-                return $"You cannot accept this student in any of your classes since you don't have any classes" +
-                    $" for {getStudentTypeOfClass.Topic}";
+                return null;
             }
 
-            if(volunteerRequirement.TypeOfClass != getStudentTypeOfClass.TypeOfClass)
-            {
-                return $"Your existing type of class doesn't match with the student's type of class";
-            }
 
-            if (getStudentTypeOfClass.TypeOfClass == TypeOfClass.OneToOne)
+
+            /*if (getStudentTypeOfClass.TypeOfClass == TypeOfClass.OneToOne)
             {
                 var addNewStudent = new OneToOne()
                 {
@@ -132,7 +129,7 @@ namespace GyanDyan.Services
                 await _context.OneToOneClass.AddAsync(addNewStudent);
                 SaveChangesToDB();
 
-                return $"Added student to {volunteerRequirement.AreaOfSpecialization} class";
+                return $"Added student to //Added sub name class";
             }
             if(getStudentTypeOfClass.TypeOfClass == TypeOfClass.Group)
             {
@@ -146,10 +143,18 @@ namespace GyanDyan.Services
                 await _context.GroupsClass.AddAsync(addNewStudent);
                 SaveChangesToDB();
 
-                return $"Added student to {volunteerRequirement.AreaOfSpecialization} class";
-            }
+                return $"Added student to  class";
+            }*/
 
-            return "Not added";
+            return volunteerRequirement;
+        }
+
+        public async Task<List<VolunteerInbox>> GetReqListForStudents(int studentId)
+        {
+            return await _context.VolunteerInboxes
+                .Where(id => id.StudentId == studentId)
+                .Include(i => i.VolunteerRequirement)
+                .ToListAsync();
         }
 
         #region PRIVATE METHODS
@@ -161,7 +166,6 @@ namespace GyanDyan.Services
             _context.VolunteerInboxes.Remove(toRemove);
             _context.SaveChanges();
         }
-
         private void SaveChangesToDB()
         {
             _context.SaveChanges();

@@ -166,7 +166,7 @@ export default function SignupVolunteer(props) {
                                 value={formik.values.gender}
                                 options={genderOptions}
                                 />
-                            {formik.errors.job ? <div className='error'>{formik.errors.job}</div> : null}
+                            {formik.errors.gender ? <div className='error'>{formik.errors.gender}</div> : null}
                         </div>
                         </div>
                 </div>

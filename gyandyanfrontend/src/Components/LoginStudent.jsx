@@ -20,7 +20,7 @@ export default function LoginStudent(props) {
         validationSchema: loginValidationSchema,
         onSubmit: values => {
           httpClient.post("user/student-login", values).then((res) => {
-            sessionStorage.setItem("token", res.data.jwt);
+            localStorage.setItem("token", res.data.jwt);
             const userInfo = decode(res.data.jwt);
             console.log(userInfo.Roles);
             dispatch(authSlice.actions.login({ userInfo, token: res.data.jwt }));

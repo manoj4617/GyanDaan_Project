@@ -25,17 +25,15 @@ namespace GyanDyan.Controllers
         [Authorize(Policy = StaticProvider.StudentPolicy)]
         [HttpPost("new-student-requirement")]
         public async Task<IActionResult> AddNewStudentRequirement(StudentRequirementViewModel requirementViewModel)
-        {
-            await _requirements.AddNewStudentRequirement(requirementViewModel);
-            return Ok("Your new requirement was added!!!");
+        { 
+            return Ok(await _requirements.AddNewStudentRequirement(requirementViewModel));
         }
 
         [Authorize(Policy = StaticProvider.VolunteerPolicy)]
         [HttpPost("new-volunteer-requirement")]
         public async Task<IActionResult> AddNewVolunteerRequirement(VolunteerRequirementViewModel requirementViewModel)
         {
-            await _requirements.AddNewVolunteerRequirement(requirementViewModel);
-            return Ok("Your new requirement was added!!!");
+            return Ok(await _requirements.AddNewVolunteerRequirement(requirementViewModel));
         }
 
         [Authorize(Policy = StaticProvider.StudentPolicy)]

@@ -12,6 +12,21 @@ export const educationQualification =[
     {value:"PostGraduate", label:"Post Graduate"},
 ]
 
+export const days = [
+    {value:"Sunday", label:"Sunday"},
+    {value:"Monday", label:"Monday"},
+    {value:"Tuesday", label:"Tuesday"},
+    {value:"Wednesday", label:"Wednesday"},
+    {value:"Thursday", label:"Thursday"},
+    {value:"Friday", label:"Friday"},
+    {value:"Saturday", label:"Saturday"},
+]
+
+export const typeOfClass = [
+    {value:"OneToOne", label:"One To One"}, 
+    {value:"Group", label:"Group"},
+]
+
 export const loginValidationSchema = Yup.object().shape({
     email: Yup.string()
         .email('Invalid email address')
@@ -20,6 +35,16 @@ export const loginValidationSchema = Yup.object().shape({
         .required('Required')
 });
 
+export const requirementValidations = Yup.object().shape({
+    subject: Yup.string().required('Required'),
+    topic : Yup.string(),
+    startDay : Yup.string().required('Required'),
+    endDay : Yup.string().required('Required'),
+    startTime : Yup.string().required('Required'),
+    endTime : Yup.string().required('Required'),
+    typeOfClass : Yup.string().required('Required'),
+    timeOfStart :  Yup.date().required('Required'),
+});
 export const validationSchema = Yup.object().shape({
     firstName: Yup.string()
         .required('Required'),

@@ -7,8 +7,8 @@ namespace GyanDyan.Services.Interfaces
 {
     public interface IRequirement
     {
-        Task AddNewStudentRequirement(StudentRequirementViewModel requirementViewModel);
-        Task AddNewVolunteerRequirement(VolunteerRequirementViewModel requirementViewModel);
+        Task<string> AddNewStudentRequirement(StudentRequirementViewModel requirementViewModel);
+        Task<string> AddNewVolunteerRequirement(VolunteerRequirementViewModel requirementViewModel);
         Task<IEnumerable<StudentRequirement>> GetStudentRequirements(int studentId);
         Task<IEnumerable<VolunteerRequirement>> GetVolunteerRequirements(int volunteerId);
         Task<IEnumerable<VolunteerRequirement>> ShowAllVolunteerDetailsForStudent(int studentId);

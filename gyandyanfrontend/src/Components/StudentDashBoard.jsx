@@ -9,8 +9,8 @@ export default function StudentDashBoard() {
   const userInfo = decode(authStatus.token);
   const [userData, setuserData] = useState([]);
   const [volunteerData, setvolunteerData] = useState([]);
+  const [inboxData, setinboxData] = useState([]);
   const [message, setmessage] = useState("nothing");
-
 
   useEffect(() => {
     httpClient
@@ -20,21 +20,40 @@ export default function StudentDashBoard() {
         setuserData(userInfo);
       });
 
-      httpClient
+    httpClient
       .get(`requirement/get-all-student-requirement/${userInfo.Id}`)
       .then((res) => {
         setvolunteerData(res.data);
       });
-  }, []);
 
-    const sendRequest = async (volunteerId,requirementId,studentId) => {
-    const response = await httpClient.get(
+    httpClient
+      .get(`RequirementTranscation/get-pending/${userInfo.Id}`)
+      .then((res) => {
+        setinboxData(res.data);
+      });
+  });
+
+  if(volunteerData !== null && inboxData !== null){
+      var result = volunteerData.filter(id => 
+        inboxData.find(x => x.volunteerRequirementId === id.id));
+
+      // var volunteer = volunteerData.filter(id => inboxData.find(x => id.id !== x.volunteerRequirementId));
+      // console.log(volunteer);
+  }
+
+
+  const sendRequest = async (volunteerId, requirementId, studentId) => {
+      await httpClient
+      .get(
         `RequirementTranscation/send-request/${volunteerId}/${requirementId}/${studentId}`
-    )
-    .then(res => {
-        console.log(res)
+      )
+      .then((res) => {
+        console.log(res);
         setmessage(res.data);
-    })}
+        //window.location.reload();
+      });
+  };
+
 
   return (
     <>
@@ -49,98 +68,164 @@ export default function StudentDashBoard() {
           </div>
         </div>
         {message !== "nothing" ? (
-            <div class="alert alert-success fs-6 bg-warning w-25 mx-auto"  role="alert">{message}</div>
+          <div
+            className="alert alert-success fs-6 bg-warning w-25 mx-auto"
+            role="alert"
+          >
+            {message}
+          </div>
         ) : null}
+
         <div className="row justify-content-around">
           <div className="col-sm h-50 overflow-auto">
             <div className="m-2 p-1">
               <h3>Your Requirements</h3>
             </div>
             <div className="container mt-3">
-              {userData.map((item) => {
-                return (
-                  <div
-                    className="custom-card card w-75  fs-3 m-2"
-                    key={item.Id}
-                  >
-                    <div className="card-body" key={item.Id}>
-                      <h5 className="card-title fs-2">{item.topic}</h5>
-                      <hr />
-                      <p className="card-text fs-5" key={item.Id}>
-                        Starts on {days[item.startDay]} of every week
-                      </p>
-                      <p className="card-text fs-5" key={item.Id}>
-                        Lasts till {days[item.endDay]} of every week
-                      </p>
-                      <p className="card-text fs-5" key={item.Id}>
-                        Time of class {item.timeOfStart}
-                      </p>
-                      <p className="card-text fs-5" key={item.Id}>
-                        {typeOfClass[item.typeOfClass]} class
-                      </p>
-                      {item.oneToOne !== null ? (
-                        <p
-                          key={item.Id}
-                          id="accepted"
-                          className="card-text fs-4"
-                        >
-                          One to One class with volunteer{" "}
-                          {item.oneToOne.volunteerProfile.firstName}{" "}
-                          {item.oneToOne.volunteerProfile.lastName}
-                        </p>
-                      ) : (
-                        <p
-                          key={item.Id}
-                          id="rejected"
-                          className="card-text fs-4"
-                        >
-                          Not Accepted by any volunteer yet
-                        </p>
-                      )}
-                    </div>
-                  </div>
-                );
-              })}
+              {userData === null ? (
+                <div className="card w-25 mx-auto mb-3 h-25 text-center font-weight-bold fs-5">
+                  <div className="card-body">No Requirement</div>
+                </div>
+              ) : (
+                <table className="table table-dark table-striped table-hover table-borderless">
+                  <thead>
+                    <tr>
+                      <th scope="col">Sl no:</th>
+                      <th scope="col">Subject</th>
+                      <th scope="col">Topic</th>
+                      <th scope="col">From Day</th>
+                      <th scope="col">Till day</th>
+                      <th scope="col">From</th>
+                      <th scope="col">Till</th>
+                      <th scope="col">Type of className</th>
+                      <th scope="col">Status</th>
+                      <th scope="col">Edit</th>
+                    </tr>
+                  </thead>
+                  {userData.map((item, index) => (
+                    <tbody>
+                      <tr>
+                        <th className="p-1" scope="row">{index + 1}</th>
+                        <td className="p-1">{item.subject}</td>
+                        <td className="p-1">{item.topic}</td>
+                        <td className="p-1">{days[item.startDay]}</td>
+                        <td className="p-1">{days[item.endDay]}</td>
+                        <td className="p-1">{item.startTime}</td>
+                        <td className="p-1">{item.endTime}</td>
+                        <td className="p-1">{typeOfClass[item.typeOfClass]}</td>
+                        {item.oneToOne !== null ? (
+                          <>
+                          <td className="text-success p-1">
+                            <button 
+                              className="btn btn-success"
+                              type="button">
+                              Accepted
+                            </button>
+                          </td>
+                          <td></td>
+                           </>
+                        ) : item.group !== null ? (
+                          <>
+                          <td className="text-success p-1">
+                            <a
+                              href="/"
+                              className="text-success"
+                            >
+                              Accepted
+                            </a>
+                          </td>
+                          <td></td>
+                          </>
+                        ) : item.oneToOne === null && item.group === null ? (
+                          <>
+                            <td className="text-danger p-1">Not yet Accepted</td>
+                            <td><i className="fa fa-edit"></i></td>
+                          </>
+                        ) : null}
+                      </tr>
+                    </tbody>
+                  ))}
+                </table>
+              )}
             </div>
           </div>
-          <div className="col-sm h-50 overflow-auto">
-            <div className="m-2 p-1">
-              <h3>You might be interested in these...</h3>
-              <div className="container mt-4">
-              {volunteerData.map((item) => {
-                return (
-                  <div
-                    className="custom-card card w-75 fs-3 m-2"
-                    key={item.Id}
-                  >
-                    <div className="card-body" key={item.Id}>
-                      <h5 className="card-title fs-2">{item.areaOfSpecialization}</h5>
-                      <hr />
-                      <p className="card-text fs-5" key={item.Id}>
-                        Starts on {days[item.startDay]} of every week
-                      </p>
-                      <p className="card-text fs-5" key={item.Id}>
-                        Lasts till {days[item.endDay]} of every week
-                      </p>
-                      <p className="card-text fs-5" key={item.Id}>
-                        Timing of class from {item.startTime} to {item.endTime}
-                      </p>
-                      <p className="card-text fs-5" key={item.Id}>
-                        {typeOfClass[item.typeOfClass]} class
-                      </p>
-                      <hr />
-                        <div class="row justify-content-between">
-                            <div class="col-4">
-                                <button type="button"
-                                 className="btn btn-warning"
-                                 onClick={()=>sendRequest(item.volunteerProfileId,item.id,userInfo.Id)}>Interested</button>
-                            </div>
-                        </div>
-                    </div>
-                  </div>
-                );
-              })}
+
+          <div className="m-2 p-1">
+            <h3>Pending Requests</h3>
+            <div className="container mt-4">
+              <table className="table table-dark table-striped table-hover table-borderless">
+                <thead>
+                  <tr>
+                    <th scope="col">Sl no:</th>
+                    <th scope="col">Subject</th>
+                    <th scope="col">Topic</th>
+                    <th scope="col">From Day</th>
+                    <th scope="col">Till day</th>
+                    <th scope="col">From</th>
+                    <th scope="col">Till</th>
+                    <th scope="col">Type of className</th>
+                    <th scope="col">Status</th>
+                  </tr>
+                </thead>
+                {result.map((item, index) => (
+                  <tbody>
+                    <tr>
+                      <th  className ="p-1" scope="row">{index + 1}</th>
+                      <td className ="p-1" >{item.subject}</td>
+                      <td className ="p-1" >{item.topic}</td>
+                      <td className ="p-1" >{days[item.startDay]}</td>
+                      <td className ="p-1" >{days[item.endDay]}</td>
+                      <td className ="p-1" >{item.startTime}</td>
+                      <td className ="p-1" >{item.endTime}</td>
+                      <td className ="p-1" >{typeOfClass[item.typeOfClass]}</td>
+                      <td className="p-1 text-warning">Pending</td>
+                    </tr>
+                  </tbody>
+                ))}
+              </table>
             </div>
+          </div>
+          
+          <div className="m-2 p-1">
+            <h3>You might be interested in these...</h3>
+            <div className="container mt-4">
+              
+              <table className="table table-dark table-striped table-hover table-borderless">
+                <thead>
+                  <tr>
+                    <th scope="col">Sl no:</th>
+                    <th scope="col">From Volunteer</th>
+                    <th scope="col">Subject</th>
+                    <th scope="col">Topic</th>
+                    <th scope="col">Respond</th>
+                  </tr>
+                </thead>
+                {volunteerData.map((item, index) => (
+                  <tbody>
+                    <tr>
+                      <th className ="p-1" scope="row">{index + 1}</th>
+                      <th className = "p-1">{item.volunteerProfile.firstName}</th>
+                      <td className ="p-1" >{item.subject}</td>
+                      <td className ="p-1" >{item.topic}</td>
+                      <td>
+                        <button
+                          type="button"
+                          className="btn btn-warning"
+                          onClick={() =>
+                            sendRequest(
+                              item.volunteerProfileId,
+                              item.id,
+                              userInfo.Id
+                            )
+                          }
+                        >
+                          Interested
+                        </button>
+                      </td>
+                    </tr>
+                  </tbody>
+                ))}
+              </table>
             </div>
           </div>
         </div>

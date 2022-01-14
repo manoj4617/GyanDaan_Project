@@ -1,0 +1,31 @@
+{
+  "indian history": {
+    "0": "Prehistoric era (until c. 3300 BCE)",
+    "1": "Paleolithic",
+    "2": "Neolithic",
+    "3": "Bronze Age – first urbanisation (c. 3300 – c. 1800 BCE)",
+    "4": "Indus Valley Civilisation",
+    "5": "Ochre Coloured Pottery Culture",
+    "7": "Iron Age (1500 – 200 BCE)",
+    "8": "Vedic period (c. 1500 – 600 BCE)",
+    "9": "Second urbanisation (600–200 BCE)",
+    "10": "Classical and early medieval periods (c. 200 BCE – c. 1200 CE)",
+    "11": "Early classical period (c. 200 BCE – c. 320 CE)",
+    "12": "Classical period: Gupta Empire (c. 320 – 650 CE)",
+    "13": "Early medieval period (mid 6th c.–1200 CE)",
+    "14": "Late medieval period (c. 1200–1526 CE)",
+    "15": "Delhi Sultanate",
+    "16": "Vijayanagara Empire",
+    "17": "Mewar Dynasty (728-1947)",
+    "18": "Early modern period (c. 1526–1858 CE)",
+    "19": "Mughal Empire",
+    "20": "Marathas and Sikhs",
+    "21": "European exploration",
+    "22": "East India Company rule in India",
+    "23": "Modern period and independence (after c. 1850 CE)",
+    "24": "Rebellion of 1857 and its consequences",
+    "25": "British Raj (1858–1947)",
+    "26": "Indian independence movement (1885–1947)",
+    "27": "Independence and partition (c. 1947–present)"
+  }
+}
