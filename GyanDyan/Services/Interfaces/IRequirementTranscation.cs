@@ -12,6 +12,10 @@ namespace GyanDyan.Services
         string RejectedByVolunteer(int volunteerID,int requirementId, int studentId);
         Task<List<SendNotificationDetials>> GetAllNotificationsForVolunteer(int volunteerId);
         Task<List<VolunteerRequirement>> AcceptStudentRequirement(int studentRequirementId, int volunteerId);
+        Task<string> InviteThisStudentReq(int studentReqId, int volunteerReqId);
         Task<List<VolunteerInbox>> GetReqListForStudents(int studentId);
+        Task<List<StudentInbox>> GetInvitationsForStudent(int studentId);
+        Task<string> AcceptInvitation(int inviteId);
+        string RejectedInvitation(int inviteId);
     }
 }

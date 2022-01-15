@@ -109,52 +109,99 @@ namespace GyanDyan.Services
                         || id.Topic == getStudentTypeOfClass.Topic)
                     .ToListAsync();
 
-            //If the volunteer trying to admit the student does not have any class with the same topic as the student requirement
-            //and same type of class the she/he cannot admit the studnet to the class
             if (volunteerRequirement == null)
             {
                 return null;
             }
 
-
-
-            /*if (getStudentTypeOfClass.TypeOfClass == TypeOfClass.OneToOne)
-            {
-                var addNewStudent = new OneToOne()
-                {
-                    StudentRequirementId = studentRequirementId,
-                    VolunteerProfileId = volunteerId
-                };
-                getStudentTypeOfClass.AcceptedByVolunteer = true;
-                await _context.OneToOneClass.AddAsync(addNewStudent);
-                SaveChangesToDB();
-
-                return $"Added student to //Added sub name class";
-            }
-            if(getStudentTypeOfClass.TypeOfClass == TypeOfClass.Group)
-            {
-                var addNewStudent = new Group()
-                {
-                    VolunteerRequirementId = volunteerRequirement.Id,
-                    StudentId = getStudentTypeOfClass.StudentProfileId,
-                    StudentRequirementId = studentRequirementId
-                };
-                getStudentTypeOfClass.AcceptedByVolunteer = true;
-                await _context.GroupsClass.AddAsync(addNewStudent);
-                SaveChangesToDB();
-
-                return $"Added student to  class";
-            }*/
-
             return volunteerRequirement;
         }
 
+        public async Task<string> InviteThisStudentReq(int studentReqId, int volunteerReqId)
+        {
+            var getVolunteer = await _context.VolunteerRequirements
+                .Where(i => i.Id == volunteerReqId)
+                .FirstOrDefaultAsync();
+
+            var getStudent = await _context.StudentRequirements
+                .Where(i => i.Id == studentReqId)
+                .FirstOrDefaultAsync();
+
+            var inviteStudnet = new StudentInbox()
+            {
+                StudentRequirementId = studentReqId,
+                StudentId = getStudent.StudentProfileId,
+                VolunteerId = getVolunteer.VolunteerProfileId,
+                VolunteerRequirementId = volunteerReqId
+            };
+
+            await _context.StudentInboxes.AddAsync(inviteStudnet);
+            SaveChangesToDB();
+
+            return $"Your invitation was sent successfully!!!";
+        }
         public async Task<List<VolunteerInbox>> GetReqListForStudents(int studentId)
         {
             return await _context.VolunteerInboxes
                 .Where(id => id.StudentId == studentId)
                 .Include(i => i.VolunteerRequirement)
                 .ToListAsync();
+        }
+
+        public async Task<List<StudentInbox>> GetInvitationsForStudent(int studentId)
+        {
+            return await _context.StudentInboxes
+                .Include(i => i.StudentRequirement)
+                .Include(i => i.VolunteerRequirement)
+                .Where(id => id.StudentId == studentId)
+                .ToListAsync();
+        }
+
+        public async Task<string> AcceptInvitation(int inviteId)
+        {
+            var getInvite = await _context.StudentInboxes
+                .Include(i => i.StudentRequirement)
+                .Include(i => i.VolunteerRequirement)
+                .ThenInclude(i => i.VolunteerProfile)
+                .Where(id => id.Id == inviteId)
+                .FirstOrDefaultAsync();
+
+            var getStudentReq = _context.StudentRequirements
+               .Where(rid => rid.Id == getInvite.StudentRequirementId)
+               .FirstOrDefault();
+
+            if (getInvite.StudentRequirement.TypeOfClass == TypeOfClass.Group)
+            {
+                var addInGroupClass = new Group()
+                {
+                    VolunteerRequirementId = getInvite.VolunteerRequirementId,
+                    StudentRequirementId = getInvite.StudentRequirementId,
+                    StudentId = getInvite.StudentId
+                };
+                await _context.GroupsClass.AddAsync(addInGroupClass);
+                getStudentReq.AcceptedByVolunteer = true;
+                RemoveInvitation(inviteId);
+            }
+            if(getInvite.StudentRequirement.TypeOfClass == TypeOfClass.OneToOne)
+            {
+                var addIn1to1 = new OneToOne()
+                {
+                    StudentRequirementId = getInvite.StudentRequirement.Id,
+                    VolunteerProfileId = getInvite.VolunteerRequirement.VolunteerProfileId,
+                };
+                await _context.OneToOneClass.AddAsync(addIn1to1);
+                getStudentReq.AcceptedByVolunteer = true;
+                RemoveInvitation(inviteId);
+            }
+            SaveChangesToDB();
+            return $"You have accepted the invitation from {getInvite.VolunteerRequirement.VolunteerProfile.FirstName} for {getStudentReq.Subject}";
+        }
+
+        public string RejectedInvitation(int inviteId)
+        {
+            RemoveInvitation(inviteId);
+            SaveChangesToDB();
+            return "Rejected";
         }
 
         #region PRIVATE METHODS
@@ -165,6 +212,12 @@ namespace GyanDyan.Services
             && id.VolunteerId == volunteerID).FirstOrDefault();
             _context.VolunteerInboxes.Remove(toRemove);
             _context.SaveChanges();
+        }
+
+        private  void RemoveInvitation(int inviteId)
+        {
+            var rm =  _context.StudentInboxes.Where(id => id.Id == inviteId).FirstOrDefault();
+            _context.StudentInboxes.Remove(rm);
         }
         private void SaveChangesToDB()
         {

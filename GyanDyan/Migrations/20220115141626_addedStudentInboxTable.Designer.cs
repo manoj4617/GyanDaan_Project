@@ -4,14 +4,16 @@ using GyanDyan.DataAccess;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace GyanDyan.Migrations
 {
     [DbContext(typeof(Context))]
-    partial class ContextModelSnapshot : ModelSnapshot
+    [Migration("20220115141626_addedStudentInboxTable")]
+    partial class addedStudentInboxTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -97,12 +99,6 @@ namespace GyanDyan.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("StudentId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("StudentProfileId")
-                        .HasColumnType("int");
-
                     b.Property<int>("StudentRequirementId")
                         .HasColumnType("int");
 
@@ -112,19 +108,12 @@ namespace GyanDyan.Migrations
                     b.Property<int?>("VolunteerProfileId")
                         .HasColumnType("int");
 
-                    b.Property<int>("VolunteerRequirementId")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("StudentProfileId");
 
                     b.HasIndex("StudentRequirementId")
                         .IsUnique();
 
                     b.HasIndex("VolunteerProfileId");
-
-                    b.HasIndex("VolunteerRequirementId");
 
                     b.ToTable("StudentInboxes");
                 });
@@ -397,10 +386,6 @@ namespace GyanDyan.Migrations
 
             modelBuilder.Entity("GyanDyan.Models.Domain+StudentInbox", b =>
                 {
-                    b.HasOne("GyanDyan.Models.Domain+StudentProfile", "StudentProfile")
-                        .WithMany("StudentInboxes")
-                        .HasForeignKey("StudentProfileId");
-
                     b.HasOne("GyanDyan.Models.Domain+StudentRequirement", "StudentRequirement")
                         .WithOne("StudentInbox")
                         .HasForeignKey("GyanDyan.Models.Domain+StudentInbox", "StudentRequirementId")
@@ -410,12 +395,6 @@ namespace GyanDyan.Migrations
                     b.HasOne("GyanDyan.Models.Domain+VolunteerProfile", "VolunteerProfile")
                         .WithMany("StudentInboxes")
                         .HasForeignKey("VolunteerProfileId");
-
-                    b.HasOne("GyanDyan.Models.Domain+VolunteerRequirement", "VolunteerRequirement")
-                        .WithMany("StudentInboxes")
-                        .HasForeignKey("VolunteerRequirementId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("GyanDyan.Models.Domain+StudentRequirement", b =>

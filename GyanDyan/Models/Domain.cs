@@ -30,6 +30,7 @@ namespace GyanDyan.Models
             public IList<OneToOne> OneToOne { get; set; }
             public IList<Group> InGroupStudent { get; set; }
             public List<VolunteerInbox> VolunteerInboxes { get; set; }
+            public List<StudentInbox> StudentInboxes { get; set; }
         }
 
         public class StudentRequirement
@@ -49,6 +50,7 @@ namespace GyanDyan.Models
             public bool AcceptedByVolunteer { get; set; }
             public OneToOne OneToOne { get; set; }
             public Group Group { get; set; }
+            public StudentInbox StudentInbox { get; set; }
         }
 
         public class VolunteerProfile
@@ -71,6 +73,7 @@ namespace GyanDyan.Models
             public List<VolunteerRequirement> VolunteerRequirements { get; set; }
             public List<OneToOne> OneToOnes { get; set; }
             public List<VolunteerInbox> VolunteerInboxes { get; set; }
+            public List<StudentInbox> StudentInboxes { get; set; }
         }
 
         public class VolunteerRequirement
@@ -90,6 +93,7 @@ namespace GyanDyan.Models
             public OneToOne OneToOnes { get; set; }
             public List<Group> InGroupVolunteer { get; set; }
             public List<VolunteerInbox> VolunteerInboxes { get; set; }
+            public List<StudentInbox> StudentInboxes { get; set; }
         }
 
         public class OneToOne
@@ -134,6 +138,19 @@ namespace GyanDyan.Models
 
             public int StudentId { get; set; }
             public StudentProfile StudentProfile { get; set; }
+        }
+
+        public class StudentInbox
+        {
+            public int Id { get; set; }
+            public int StudentId { get; set; }
+            public StudentProfile StudentProfile { get; set; }
+            public int StudentRequirementId { get; set; }
+            public StudentRequirement StudentRequirement { get; set; }
+            public int VolunteerId{ get; set; }
+            public VolunteerProfile VolunteerProfile { get; set; }
+            public int VolunteerRequirementId { get; set; }
+            public VolunteerRequirement VolunteerRequirement { get; set; }
         }
 
         #region <ENUMS>

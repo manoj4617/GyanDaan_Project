@@ -47,9 +47,6 @@ export default function StudentDashBoard() {
   if (volunteerData !== null && inboxData !== null) {
     var result = volunteerData.filter(id =>
       inboxData.find(x => x.volunteerRequirementId === id.id));
-
-    // var volunteer = volunteerData.filter(id => inboxData.find(x => id.id !== x.volunteerRequirementId));
-    // console.log(volunteer);
   }
 
 
@@ -79,41 +76,41 @@ export default function StudentDashBoard() {
       </div>
       {/* Card  */}
       <section>
-        <div class="container">
-          <div class="row">
-            <div class="col-md-4 mt-4">
-              <div class="card profile-card-5" >
-                <div class="card-img-block">
-                  <img class="card-img-top" src={accepted} alt="Card image cap" />
+        <div className="container">
+          <div className="row">
+            <div className="col-md-4 mt-4">
+              <div className="card profile-card-5" >
+                <div className="card-img-block">
+                  <img className="card-img-top" src={accepted} alt="Card image cap" />
                 </div>
-                <div class="card-body pt-0">
-                  <h5 class="card-title">Accepted Requests </h5>
-                  <p class="card-text">Shows the detail view of accepted requests from volunteer.</p>
-                  <a href="#" class="btn btn-primary">View</a>
-                </div>
-              </div>
-            </div>
-            <div class="col-md-4 mt-4">
-              <div class="card profile-card-5" >
-                <div class="card-img-block">
-                  <img class="card-img-top" src={pending} alt="Card image cap" />
-                </div>
-                <div class="card-body pt-0">
-                  <h5 class="card-title">Pending Requests </h5>
-                  <p class="card-text">Shows the detail view of pending requests from volunteer.</p>
-                  <a href="#" class="btn btn-primary">View</a>
+                <div className="card-body pt-0">
+                  <h5 className="card-title">Accepted Requests </h5>
+                  <p className="card-text">Shows the detail view of accepted requests from volunteer.</p>
+                  <a href="#" className="btn btn-primary">View</a>
                 </div>
               </div>
             </div>
-            <div class="col-md-4 mt-4">
-              <div class="card profile-card-5" >
-                <div class="card-img-block">
-                  <img class="card-img-top" src={new_request} alt="Card image cap" />
+            <div className="col-md-4 mt-4">
+              <div className="card profile-card-5" >
+                <div className="card-img-block">
+                  <img className="card-img-top" src={pending} alt="Card image cap" />
                 </div>
-                <div class="card-body pt-0">
-                  <h5 class="card-title">Add New Requriment </h5>
-                  <p class="card-text">Add new requirement of your interest.</p>
-                  <a href="/requirement" class="btn btn-primary">ADD</a>
+                <div className="card-body pt-0">
+                  <h5 className="card-title">Pending Requests </h5>
+                  <p className="card-text">Shows the detail view of pending requests from volunteer.</p>
+                  <a href="#" className="btn btn-primary">View</a>
+                </div>
+              </div>
+            </div>
+            <div className="col-md-4 mt-4">
+              <div className="card profile-card-5" >
+                <div className="card-img-block">
+                  <img className="card-img-top" src={new_request} alt="Card image cap" />
+                </div>
+                <div className="card-body pt-0">
+                  <h5 className="card-title">Add New Requriment </h5>
+                  <p className="card-text">Add new requirement of your interest.</p>
+                  <a href="/requirement" className="btn btn-primary">ADD</a>
                 </div>
               </div>
             </div>
@@ -281,7 +278,7 @@ export default function StudentDashBoard() {
 
             role="alert"
           >
-            <button type="button" class="close" data-dismiss="alert">&times;</button>
+            <button type="button" className="close" data-dismiss="alert">&times;</button>
             {message}
           </div>
 
