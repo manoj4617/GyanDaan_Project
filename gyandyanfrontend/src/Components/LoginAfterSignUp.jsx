@@ -9,8 +9,8 @@ export default function LoginAfterSignUp(props) {
     
     return (
         <div>
-            <div class="card w-25 mx-auto mb-3 h-25 bg-transparent text-center font-weight-bold fs-5">
-                <div class="card-body">
+            <div className="card w-25 mx-auto mb-3 h-25 bg-transparent text-center font-weight-bold fs-5">
+                <div className="card-body">
                     {message}
                 </div>
             </div>

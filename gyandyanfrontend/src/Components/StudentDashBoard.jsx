@@ -3,6 +3,9 @@ import { useSelector } from "react-redux";
 import { decode } from "../utils/jwt";
 import { httpClient } from "../http/httpclient";
 import { days, typeOfClass } from "./Constants/Constants";
+import accepted from '../Components/images/accepted1.png';
+import pending from '../Components/images/pending2.png';
+import new_request from '../Components/images/new_request2.png';
 
 export default function StudentDashBoard() {
   const authStatus = useSelector((state) => state.auth);
@@ -12,44 +15,52 @@ export default function StudentDashBoard() {
   const [inboxData, setinboxData] = useState([]);
   const [message, setmessage] = useState("nothing");
 
+
+
   useEffect(() => {
-    httpClient
-      .get(`requirement/get-student-requirement/${userInfo.Id}`)
-      .then((res) => {
-        const userInfo = res.data;
-        setuserData(userInfo);
-      });
+    let isMounted = true;
+    if (isMounted) {
+      httpClient
+        .get(`requirement/get-student-requirement/${userInfo.Id}`)
+        .then((res) => {
+          const userInfo = res.data;
+          setuserData(userInfo);
+        });
 
-    httpClient
-      .get(`requirement/get-all-student-requirement/${userInfo.Id}`)
-      .then((res) => {
-        setvolunteerData(res.data);
-      });
+      httpClient
+        .get(`requirement/get-all-student-requirement/${userInfo.Id}`)
+        .then((res) => {
+          setvolunteerData(res.data);
+        });
 
-    httpClient
-      .get(`RequirementTranscation/get-pending/${userInfo.Id}`)
-      .then((res) => {
-        setinboxData(res.data);
-      });
-  });
+      httpClient
+        .get(`RequirementTranscation/get-pending/${userInfo.Id}`)
+        .then((res) => {
+          setinboxData(res.data);
+        });
+    }
+    return () => {
+      isMounted = false;
+    }
+  }, []);
 
-  if(volunteerData !== null && inboxData !== null){
-      var result = volunteerData.filter(id => 
-        inboxData.find(x => x.volunteerRequirementId === id.id));
+  if (volunteerData !== null && inboxData !== null) {
+    var result = volunteerData.filter(id =>
+      inboxData.find(x => x.volunteerRequirementId === id.id));
 
-      // var volunteer = volunteerData.filter(id => inboxData.find(x => id.id !== x.volunteerRequirementId));
-      // console.log(volunteer);
+    // var volunteer = volunteerData.filter(id => inboxData.find(x => id.id !== x.volunteerRequirementId));
+    // console.log(volunteer);
   }
 
 
   const sendRequest = async (volunteerId, requirementId, studentId) => {
-      await httpClient
+    await httpClient
       .get(
         `RequirementTranscation/send-request/${volunteerId}/${requirementId}/${studentId}`
       )
       .then((res) => {
         console.log(res);
-        setmessage(res.data);
+        setmessage(res.data)
         //window.location.reload();
       });
   };
@@ -57,179 +68,290 @@ export default function StudentDashBoard() {
 
   return (
     <>
-      <div className="container">
-        <div className="row">
-          <div className="col-sm">
-            <div className="card w-100 bg-transparent fs-3 m-2">
-              <div className="dis-name card-body">
-                Welcome {userInfo.unique_name} !
-              </div>
-            </div>
-          </div>
-        </div>
-        {message !== "nothing" ? (
-          <div
-            className="alert alert-success fs-6 bg-warning w-25 mx-auto"
-            role="alert"
-          >
-            {message}
-          </div>
-        ) : null}
-
-        <div className="row justify-content-around">
-          <div className="col-sm h-50 overflow-auto">
-            <div className="m-2 p-1">
-              <h3>Your Requirements</h3>
-            </div>
-            <div className="container mt-3">
-              {userData === null ? (
-                <div className="card w-25 mx-auto mb-3 h-25 text-center font-weight-bold fs-5">
-                  <div className="card-body">No Requirement</div>
-                </div>
-              ) : (
-                <table className="table table-dark table-striped table-hover table-borderless">
-                  <thead>
-                    <tr>
-                      <th scope="col">Sl no:</th>
-                      <th scope="col">Subject</th>
-                      <th scope="col">Topic</th>
-                      <th scope="col">From Day</th>
-                      <th scope="col">Till day</th>
-                      <th scope="col">From</th>
-                      <th scope="col">Till</th>
-                      <th scope="col">Type of className</th>
-                      <th scope="col">Status</th>
-                      <th scope="col">Edit</th>
-                    </tr>
-                  </thead>
-                  {userData.map((item, index) => (
-                    <tbody>
-                      <tr>
-                        <th className="p-1" scope="row">{index + 1}</th>
-                        <td className="p-1">{item.subject}</td>
-                        <td className="p-1">{item.topic}</td>
-                        <td className="p-1">{days[item.startDay]}</td>
-                        <td className="p-1">{days[item.endDay]}</td>
-                        <td className="p-1">{item.startTime}</td>
-                        <td className="p-1">{item.endTime}</td>
-                        <td className="p-1">{typeOfClass[item.typeOfClass]}</td>
-                        {item.oneToOne !== null ? (
-                          <>
-                          <td className="text-success p-1">
-                            <button 
-                              className="btn btn-success"
-                              type="button">
-                              Accepted
-                            </button>
-                          </td>
-                          <td></td>
-                           </>
-                        ) : item.group !== null ? (
-                          <>
-                          <td className="text-success p-1">
-                            <a
-                              href="/"
-                              className="text-success"
-                            >
-                              Accepted
-                            </a>
-                          </td>
-                          <td></td>
-                          </>
-                        ) : item.oneToOne === null && item.group === null ? (
-                          <>
-                            <td className="text-danger p-1">Not yet Accepted</td>
-                            <td><i className="fa fa-edit"></i></td>
-                          </>
-                        ) : null}
-                      </tr>
-                    </tbody>
-                  ))}
-                </table>
-              )}
-            </div>
-          </div>
-
-          <div className="m-2 p-1">
-            <h3>Pending Requests</h3>
-            <div className="container mt-4">
-              <table className="table table-dark table-striped table-hover table-borderless">
-                <thead>
-                  <tr>
-                    <th scope="col">Sl no:</th>
-                    <th scope="col">Subject</th>
-                    <th scope="col">Topic</th>
-                    <th scope="col">From Day</th>
-                    <th scope="col">Till day</th>
-                    <th scope="col">From</th>
-                    <th scope="col">Till</th>
-                    <th scope="col">Type of className</th>
-                    <th scope="col">Status</th>
-                  </tr>
-                </thead>
-                {result.map((item, index) => (
-                  <tbody>
-                    <tr>
-                      <th  className ="p-1" scope="row">{index + 1}</th>
-                      <td className ="p-1" >{item.subject}</td>
-                      <td className ="p-1" >{item.topic}</td>
-                      <td className ="p-1" >{days[item.startDay]}</td>
-                      <td className ="p-1" >{days[item.endDay]}</td>
-                      <td className ="p-1" >{item.startTime}</td>
-                      <td className ="p-1" >{item.endTime}</td>
-                      <td className ="p-1" >{typeOfClass[item.typeOfClass]}</td>
-                      <td className="p-1 text-warning">Pending</td>
-                    </tr>
-                  </tbody>
-                ))}
-              </table>
-            </div>
-          </div>
-          
-          <div className="m-2 p-1">
-            <h3>You might be interested in these...</h3>
-            <div className="container mt-4">
-              
-              <table className="table table-dark table-striped table-hover table-borderless">
-                <thead>
-                  <tr>
-                    <th scope="col">Sl no:</th>
-                    <th scope="col">From Volunteer</th>
-                    <th scope="col">Subject</th>
-                    <th scope="col">Topic</th>
-                    <th scope="col">Respond</th>
-                  </tr>
-                </thead>
-                {volunteerData.map((item, index) => (
-                  <tbody>
-                    <tr>
-                      <th className ="p-1" scope="row">{index + 1}</th>
-                      <th className = "p-1">{item.volunteerProfile.firstName}</th>
-                      <td className ="p-1" >{item.subject}</td>
-                      <td className ="p-1" >{item.topic}</td>
-                      <td>
-                        <button
-                          type="button"
-                          className="btn btn-warning"
-                          onClick={() =>
-                            sendRequest(
-                              item.volunteerProfileId,
-                              item.id,
-                              userInfo.Id
-                            )
-                          }
-                        >
-                          Interested
-                        </button>
-                      </td>
-                    </tr>
-                  </tbody>
-                ))}
-              </table>
+    <div className="row">
+        <div className="col-sm">
+          <div className="card w-50 bg-transparent fs-3 m-2">
+            <div className="dis-name card-body">
+              Welcome {userInfo.unique_name} !
             </div>
           </div>
         </div>
       </div>
+      {/* Card  */}
+      <section>
+        <div class="container">
+          <div class="row">
+            <div class="col-md-4 mt-4">
+              <div class="card profile-card-5" >
+                <div class="card-img-block">
+                  <img class="card-img-top" src={accepted} alt="Card image cap" />
+                </div>
+                <div class="card-body pt-0">
+                  <h5 class="card-title">Accepted Requests </h5>
+                  <p class="card-text">Shows the detail view of accepted requests from volunteer.</p>
+                  <a href="#" class="btn btn-primary">View</a>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4 mt-4">
+              <div class="card profile-card-5" >
+                <div class="card-img-block">
+                  <img class="card-img-top" src={pending} alt="Card image cap" />
+                </div>
+                <div class="card-body pt-0">
+                  <h5 class="card-title">Pending Requests </h5>
+                  <p class="card-text">Shows the detail view of pending requests from volunteer.</p>
+                  <a href="#" class="btn btn-primary">View</a>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4 mt-4">
+              <div class="card profile-card-5" >
+                <div class="card-img-block">
+                  <img class="card-img-top" src={new_request} alt="Card image cap" />
+                </div>
+                <div class="card-body pt-0">
+                  <h5 class="card-title">Add New Requriment </h5>
+                  <p class="card-text">Add new requirement of your interest.</p>
+                  <a href="/requirement" class="btn btn-primary">ADD</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <div className="space" style={{ "paddingTop": "20px", "paddingBottom": "20px" }}></div>
+
+      <div className="container">
+        <div className="row">
+          <div className="col-md-offset-1 col-md-12">
+            <div className="panel">
+
+              <div className="panel-heading">
+                <div className="row">
+                  {userData === null ? (
+                    <div className="col col-sm-3 col-xs-12">
+                      <p className="text-white">No Requirements</p>
+                    </div>
+                  ) : (
+                    <div className="col col-sm-3 col-xs-12">
+                      <p className="text-white">Your Requirements</p>
+                    </div>
+                  )}
+
+
+                  <div className="col-sm-9 col-xs-12 text-left">
+                    <div className="btn_group">
+                      <input type="text" className="form-control" placeholder="Search" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="panel-body table-responsive">
+                <table className="table">
+                  <thead>
+                    <tr>
+                      <th>SL No</th>
+                      <th>Subject</th>
+                      <th>Topic</th>
+                      <th>From Day</th>
+                      <th>Till Day</th>
+                      <th>From</th>
+                      <th>Till</th>
+                      <th>Type Of Class</th>
+                      <th>Status</th>
+                      <th>Edit</th>
+                    </tr>
+                  </thead>
+
+                  <tbody>
+                    {userData.map((item, index) => (
+                      <tr>
+                        <td>{index + 1}</td>
+                        <td>{item.subject}</td>
+                        <td>{item.topic}</td>
+                        <td>{days[item.startDay]}</td>
+                        <td>{days[item.endDay]}</td>
+                        <td>{item.startTime}</td>
+                        <td>{item.endTime}</td>
+                        <td>{typeOfClass[item.typeOfClass]}</td>
+                        {item.oneToOne != null ? (
+                          <>
+                            <td className="text-success p-1">
+                              <button
+                                className="btn btn-success"
+                                type="button">
+                                Accepted
+                              </button>
+                            </td>
+                          </>
+                        ) : item.group != null ? (
+                          <>
+                            <td className="text-success p-1">
+                              <a
+                                href="/"
+                                className="text-success"
+                              >
+                                Accepted
+                              </a>
+                            </td>
+                          </>
+                        ) : item.oneToOne === null && item.group === null ? (
+                          <>
+                            <td className="text-warning p-1">Not yet Accepted</td>
+                            <td><i className="fa fa-edit"></i></td>
+                          </>
+                        ) : null}
+                      </tr>
+                    ))}
+                  </tbody>
+
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="space" style={{ "paddingTop": "20px", "paddingBottom": "20px" }}></div>
+
+      <div className="container">
+        <div className="row">
+          <div className="col-md-offset-1 col-md-12">
+            <div className="panel">
+              <div className="panel-heading">
+                <div className="row">
+                  <div className="col col-sm-3 col-xs-12">
+                    <p className="text-white">Pending Requests</p>
+                  </div>
+                  <div className="col-sm-9 col-xs-12 text-right">
+                    <div className="btn_group">
+                      <input type="text" className="form-control" placeholder="Search" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="panel-body table-responsive">
+                <table className="table">
+                  <thead>
+                    <tr>
+                      <th>SL No</th>
+                      <th>Subject</th>
+                      <th>Topic</th>
+                      <th>From Day</th>
+                      <th>Till Day</th>
+                      <th>From</th>
+                      <th>Till</th>
+                      <th>Type Of Class</th>
+                      <th>Status</th>
+                      <th>View</th>
+
+
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {result.map((item, index) => (
+                      <tr>
+                        <td>{index + 1}</td>
+                        <td>{item.subject}</td>
+                        <td>{item.topic}</td>
+                        <td>{days[item.startDay]}</td>
+                        <td>{days[item.endDay]}</td>
+                        <td>{item.startTime}</td>
+                        <td>{item.endTime}</td>
+                        <td>{typeOfClass[item.typeOfClass]}</td>
+                        <td className="text-warning">Pending</td>
+                        <td><i className="fa fa-eye" aria-hidden="true" href="#"></i></td>
+
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="space" style={{ "paddingTop": "20px", "paddingBottom": "20px" }}></div>
+      {message !== "nothing" ? (
+        <>
+          <div
+            className="alert alert-warning alert-dismissible fade show"
+
+            role="alert"
+          >
+            <button type="button" class="close" data-dismiss="alert">&times;</button>
+            {message}
+          </div>
+
+        </>
+      ) : null}
+      <div className="container">
+        <div className="row">
+          <div className="col-md-offset-1 col-md-12">
+            <div className="panel">
+              <div className="panel-heading">
+                <div className="row">
+                  <div className="col col-sm-3 col-xs-12">
+                    <p className="text-white">You might be interested in these courses</p>
+                  </div>
+                  <div className="col-sm-9 col-xs-12 text-right">
+                    <div className="btn_group">
+                      <input type="text" className="form-control" placeholder="Search" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="panel-body table-responsive">
+                <table className="table">
+                  <thead>
+                    <tr>
+                      <th>SL No</th>
+                      <th>From Volunteer</th>
+                      <th>Subject</th>
+                      <th>Topic</th>
+                      <th>Respond</th>
+
+
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {volunteerData.map((item, index) => (
+                      <tr>
+                        <td>{index + 1}</td>
+                        <td>{item.volunteerProfile.firstName}</td>
+                        <td>{item.subject}</td>
+                        <td>{item.topic}</td>
+                        <td>
+                          <button
+                            type="button"
+                            className="btn btn-warning"
+                            onClick={() =>
+                              sendRequest(
+                                item.volunteerProfileId,
+                                item.id,
+                                userInfo.Id
+                              )
+                            }
+                          >
+                            Interested
+                          </button>
+
+                        </td>
+
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+
     </>
   );
 }
