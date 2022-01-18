@@ -15,11 +15,16 @@
     <Compile Remove="Migrations\20211231082407_madeFewchanges.Designer.cs" />
     <Compile Remove="Migrations\20220101075917_AddedNewTable.cs" />
     <Compile Remove="Migrations\20220101075917_AddedNewTable.Designer.cs" />
+    <Compile Remove="Migrations\20220115145541_updatedStudentInboxTableAgain.cs" />
+    <Compile Remove="Migrations\20220115145541_updatedStudentInboxTableAgain.Designer.cs" />
+    <Compile Remove="Migrations\20220115145747_updatedStudentInboxTableAgain.cs" />
+    <Compile Remove="Migrations\20220115145747_updatedStudentInboxTableAgain.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="3.1.22" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Abstractions" Version="2.2.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="3.1.22" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.22" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="3.1.22">
       <PrivateAssets>all</PrivateAssets>

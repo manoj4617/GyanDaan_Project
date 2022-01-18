@@ -1,29 +1,39 @@
-import React from 'react'
+import React,{useState} from 'react'
 import { useFormik } from 'formik'
-import * as Yup from 'yup'
+import {loginValidationSchema} from './Form'
+import {httpClient} from '../http/httpclient'
+import {decode} from '../utils/jwt'
+import { useDispatch } from 'react-redux';
+import { authSlice } from '../redux/auth'
+import { useNavigate } from 'react-router'
+
+
 
 
 export default function LoginVolunteer() {
 
-    const validationSchema = Yup.object().shape({
-        email: Yup.string()
-            .email('Invalid email address')
-            .required('Required'),
-        password: Yup.string()
-            .required('Required')
-            .min(8, 'Password must be at least 8 characters')
-            .matches("^.*(?=.{8,})(?=.*[a-zA-Z])(?=.*\\d)(?=.*[!#$@%&? \"]).*$", 'Password must contain at least one letter, one number and one special character')
-    });
-
-
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const [errorMessage, seterrorMessage] = useState(null);
     const formik = useFormik({
         initialValues: {
             email: '',
             password: ''
         },
-        validationSchema: validationSchema,
+        validationSchema: loginValidationSchema,
         onSubmit: values => {
-            console.log(values)
+          httpClient.post("user/volunteer-login", values).then((res) => {
+            localStorage.setItem("token", res.data.jwt);
+            const userInfo = decode(res.data.jwt);
+            console.log(userInfo.Roles);
+            dispatch(authSlice.actions.login({ userInfo, token: res.data.jwt }));
+            navigate('/volunteer-dash')
+          })
+          .catch(err => {
+            if(err.response.status === 500){
+              seterrorMessage("Invalid Credentials");
+            }
+          });
             
         }
     });
@@ -31,7 +41,15 @@ export default function LoginVolunteer() {
 
     return (
         <> 
-            <div className='w-50 p-3 auto mx-auto my-auto border border-success rounded-1'>
+            {errorMessage != null ?  (
+              <div class="card w-25 mx-auto mb-3 h-25 bg-transparent text-center font-weight-bold fs-5">
+              <div class="card-body">
+                  {errorMessage}
+              </div>
+            </div>  
+            ) : null}
+          
+            <div className='forms w-50 p-3 auto mx-auto my-auto'>
             <h3>Volunteer Login Form</h3>
               <hr />
               <form onSubmit={formik.handleSubmit} className='p-2 m-4'>

@@ -67,9 +67,6 @@ namespace GyanDyan.Migrations
                     b.Property<int?>("StudentRequirementId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("VolunteerId")
-                        .HasColumnType("int");
-
                     b.Property<int?>("VolunteerProfileId")
                         .HasColumnType("int");
 
@@ -91,6 +88,45 @@ namespace GyanDyan.Migrations
                         .HasFilter("[VolunteerRequirementId] IS NOT NULL");
 
                     b.ToTable("OneToOneClass");
+                });
+
+            modelBuilder.Entity("GyanDyan.Models.Domain+StudentInbox", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("StudentId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("StudentProfileId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("StudentRequirementId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("VolunteerId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("VolunteerProfileId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("VolunteerRequirementId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("StudentProfileId");
+
+                    b.HasIndex("StudentRequirementId")
+                        .IsUnique();
+
+                    b.HasIndex("VolunteerProfileId");
+
+                    b.HasIndex("VolunteerRequirementId");
+
+                    b.ToTable("StudentInboxes");
                 });
 
             modelBuilder.Entity("GyanDyan.Models.Domain+StudentProfile", b =>
@@ -166,8 +202,8 @@ namespace GyanDyan.Migrations
                     b.Property<string>("EndTime")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("PostedOnDate")
-                        .HasColumnType("datetime2");
+                    b.Property<string>("PostedOnDate")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("StartDay")
                         .HasColumnType("int");
@@ -177,6 +213,9 @@ namespace GyanDyan.Migrations
 
                     b.Property<int>("StudentProfileId")
                         .HasColumnType("int");
+
+                    b.Property<string>("Subject")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("TimeOfStart")
                         .HasColumnType("datetime2");
@@ -288,22 +327,25 @@ namespace GyanDyan.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("AreaOfSpecialization")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<int>("EndDay")
                         .HasColumnType("int");
 
                     b.Property<string>("EndTime")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("PostedOnDate")
-                        .HasColumnType("datetime2");
+                    b.Property<string>("PostedOnDate")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("StartDay")
                         .HasColumnType("int");
 
                     b.Property<string>("StartTime")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Subject")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Topic")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("TypeOfClass")
@@ -351,6 +393,29 @@ namespace GyanDyan.Migrations
                     b.HasOne("GyanDyan.Models.Domain+VolunteerRequirement", "VolunteerRequirement")
                         .WithOne("OneToOnes")
                         .HasForeignKey("GyanDyan.Models.Domain+OneToOne", "VolunteerRequirementId");
+                });
+
+            modelBuilder.Entity("GyanDyan.Models.Domain+StudentInbox", b =>
+                {
+                    b.HasOne("GyanDyan.Models.Domain+StudentProfile", "StudentProfile")
+                        .WithMany("StudentInboxes")
+                        .HasForeignKey("StudentProfileId");
+
+                    b.HasOne("GyanDyan.Models.Domain+StudentRequirement", "StudentRequirement")
+                        .WithOne("StudentInbox")
+                        .HasForeignKey("GyanDyan.Models.Domain+StudentInbox", "StudentRequirementId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("GyanDyan.Models.Domain+VolunteerProfile", "VolunteerProfile")
+                        .WithMany("StudentInboxes")
+                        .HasForeignKey("VolunteerProfileId");
+
+                    b.HasOne("GyanDyan.Models.Domain+VolunteerRequirement", "VolunteerRequirement")
+                        .WithMany("StudentInboxes")
+                        .HasForeignKey("VolunteerRequirementId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("GyanDyan.Models.Domain+StudentRequirement", b =>
