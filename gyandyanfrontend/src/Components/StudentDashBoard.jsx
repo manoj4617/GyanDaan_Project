@@ -6,6 +6,8 @@ import { days, typeOfClass } from "./Constants/Constants";
 import accepted from '../Components/images/accepted1.png';
 import pending from '../Components/images/pending2.png';
 import new_request from '../Components/images/new_request2.png';
+import ReqTable from './ReqTable'
+import PendingReq from "./PendingReq";
 
 export default function StudentDashBoard() {
   const authStatus = useSelector((state) => state.auth);
@@ -14,8 +16,9 @@ export default function StudentDashBoard() {
   const [volunteerData, setvolunteerData] = useState([]);
   const [inboxData, setinboxData] = useState([]);
   const [message, setmessage] = useState("nothing");
-
-
+  const [showReqTable, setShowReqTable] = useState(false);
+  const [showPendingTable, setshowPendingTable] = useState(false);
+  const [invitation, setinvitation] = useState([]);
 
   useEffect(() => {
     let isMounted = true;
@@ -38,6 +41,13 @@ export default function StudentDashBoard() {
         .then((res) => {
           setinboxData(res.data);
         });
+
+        httpClient
+        .get(`RequirementTranscation/get-invitesfor-student/${userInfo.Id}`)
+        .then((res) => {
+          setinvitation(res.data);
+          console.log((res.data).length );
+        });
     }
     return () => {
       isMounted = false;
@@ -48,7 +58,6 @@ export default function StudentDashBoard() {
     var result = volunteerData.filter(id =>
       inboxData.find(x => x.volunteerRequirementId === id.id));
   }
-
 
   const sendRequest = async (volunteerId, requirementId, studentId) => {
     await httpClient
@@ -65,15 +74,33 @@ export default function StudentDashBoard() {
 
   return (
     <>
-    <div className="row">
-        <div className="col-sm">
-          <div className="card w-50 bg-transparent fs-3 m-2">
-            <div className="dis-name card-body">
+      <div className="container dis-name">
+        <div className="row align-items-center">
+          <div className="col-6">
+          <div className="card w-100 bg-transparent fs-3 m-2">
+            <div className="d-inline dis-name card-body">
               Welcome {userInfo.unique_name} !
+            </div>
+          </div>
+          </div>
+          <div className="col-sm ml-5 justify-content-end">
+            <a href="/update-profile" className="update-profile">Update Profile</a>
+          </div>
+          <div className="col-sm justify-content-center">
+            <div className="d-inline">
+              {Object.keys(invitation).length !== 0 ? (
+                <>
+                  <i className="inbox fa fa-inbox"></i>
+                  <span className="counter counter-lg">{Object.keys(invitation).length}</span>&nbsp;&nbsp;
+                </>
+                ) : (
+                  <i className="inbox fa fa-inbox"></i>
+                )}
             </div>
           </div>
         </div>
       </div>
+
       {/* Card  */}
       <section>
         <div className="container">
@@ -84,9 +111,9 @@ export default function StudentDashBoard() {
                   <img className="card-img-top" src={accepted} alt="Card image cap" />
                 </div>
                 <div className="card-body pt-0">
-                  <h5 className="card-title">Accepted Requests </h5>
+                  <h5 className="card-title">Your Requests </h5>
                   <p className="card-text">Shows the detail view of accepted requests from volunteer.</p>
-                  <a href="#" className="btn btn-primary">View</a>
+                  <button className="btn btn-primary" onClick={()=>setShowReqTable(true)}>View</button>
                 </div>
               </div>
             </div>
@@ -98,7 +125,7 @@ export default function StudentDashBoard() {
                 <div className="card-body pt-0">
                   <h5 className="card-title">Pending Requests </h5>
                   <p className="card-text">Shows the detail view of pending requests from volunteer.</p>
-                  <a href="#" className="btn btn-primary">View</a>
+                  <button  className="btn btn-primary" onClick={()=>setshowPendingTable(true)}>View</button>
                 </div>
               </div>
             </div>
@@ -119,156 +146,11 @@ export default function StudentDashBoard() {
       </section>
       <div className="space" style={{ "paddingTop": "20px", "paddingBottom": "20px" }}></div>
 
-      <div className="container">
-        <div className="row">
-          <div className="col-md-offset-1 col-md-12">
-            <div className="panel">
-
-              <div className="panel-heading">
-                <div className="row">
-                  {userData === null ? (
-                    <div className="col col-sm-3 col-xs-12">
-                      <p className="text-white">No Requirements</p>
-                    </div>
-                  ) : (
-                    <div className="col col-sm-3 col-xs-12">
-                      <p className="text-white">Your Requirements</p>
-                    </div>
-                  )}
-
-
-                  <div className="col-sm-9 col-xs-12 text-left">
-                    <div className="btn_group">
-                      <input type="text" className="form-control" placeholder="Search" />
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div className="panel-body table-responsive">
-                <table className="table">
-                  <thead>
-                    <tr>
-                      <th>SL No</th>
-                      <th>Subject</th>
-                      <th>Topic</th>
-                      <th>From Day</th>
-                      <th>Till Day</th>
-                      <th>From</th>
-                      <th>Till</th>
-                      <th>Type Of Class</th>
-                      <th>Status</th>
-                      <th>Edit</th>
-                    </tr>
-                  </thead>
-
-                  <tbody>
-                    {userData.map((item, index) => (
-                      <tr>
-                        <td>{index + 1}</td>
-                        <td>{item.subject}</td>
-                        <td>{item.topic}</td>
-                        <td>{days[item.startDay]}</td>
-                        <td>{days[item.endDay]}</td>
-                        <td>{item.startTime}</td>
-                        <td>{item.endTime}</td>
-                        <td>{typeOfClass[item.typeOfClass]}</td>
-                        {item.oneToOne != null ? (
-                          <>
-                            <td className="text-success p-1">
-                              <button
-                                className="btn btn-success"
-                                type="button">
-                                Accepted
-                              </button>
-                            </td>
-                          </>
-                        ) : item.group != null ? (
-                          <>
-                            <td className="text-success p-1">
-                              <a
-                                href="/"
-                                className="text-success"
-                              >
-                                Accepted
-                              </a>
-                            </td>
-                          </>
-                        ) : item.oneToOne === null && item.group === null ? (
-                          <>
-                            <td className="text-warning p-1">Not yet Accepted</td>
-                            <td><i className="fa fa-edit"></i></td>
-                          </>
-                        ) : null}
-                      </tr>
-                    ))}
-                  </tbody>
-
-                </table>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
+      {showReqTable ? (<ReqTable userData = {userData}/> ) : null}
+      
       <div className="space" style={{ "paddingTop": "20px", "paddingBottom": "20px" }}></div>
-
-      <div className="container">
-        <div className="row">
-          <div className="col-md-offset-1 col-md-12">
-            <div className="panel">
-              <div className="panel-heading">
-                <div className="row">
-                  <div className="col col-sm-3 col-xs-12">
-                    <p className="text-white">Pending Requests</p>
-                  </div>
-                  <div className="col-sm-9 col-xs-12 text-right">
-                    <div className="btn_group">
-                      <input type="text" className="form-control" placeholder="Search" />
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div className="panel-body table-responsive">
-                <table className="table">
-                  <thead>
-                    <tr>
-                      <th>SL No</th>
-                      <th>Subject</th>
-                      <th>Topic</th>
-                      <th>From Day</th>
-                      <th>Till Day</th>
-                      <th>From</th>
-                      <th>Till</th>
-                      <th>Type Of Class</th>
-                      <th>Status</th>
-                      <th>View</th>
-
-
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {result.map((item, index) => (
-                      <tr>
-                        <td>{index + 1}</td>
-                        <td>{item.subject}</td>
-                        <td>{item.topic}</td>
-                        <td>{days[item.startDay]}</td>
-                        <td>{days[item.endDay]}</td>
-                        <td>{item.startTime}</td>
-                        <td>{item.endTime}</td>
-                        <td>{typeOfClass[item.typeOfClass]}</td>
-                        <td className="text-warning">Pending</td>
-                        <td><i className="fa fa-eye" aria-hidden="true" href="#"></i></td>
-
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+      {showPendingTable ? (<PendingReq result={result}/>) : null}
+      
 
       <div className="space" style={{ "paddingTop": "20px", "paddingBottom": "20px" }}></div>
       {message !== "nothing" ? (

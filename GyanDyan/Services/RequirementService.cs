@@ -157,7 +157,50 @@ namespace GyanDyan.Services
 
         }
 
-       
+        public async Task<string> UpdateStudentRequirement(int studentReqId, StudentRequirementViewModel requirementViewModel)
+        {
+            var studentReq = await _studentContext.StudentRequirements.FirstOrDefaultAsync(id => id.Id == studentReqId);
+
+            if(studentReq == null)
+            {
+                return "Requirement doesn't exist";
+            }
+
+            studentReq.StartDay = (Days)Enum.Parse(typeof(Days), requirementViewModel.StartDay);
+            studentReq.EndDay = (Days)Enum.Parse(typeof(Days), requirementViewModel.EndDay);
+            studentReq.StartTime = requirementViewModel.StartTime;
+            studentReq.EndTime = requirementViewModel.EndTime;
+            studentReq.Subject = requirementViewModel.Subject;
+            studentReq.Topic = requirementViewModel.Topic;
+            studentReq.TypeOfClass = (TypeOfClass)Enum.Parse(typeof(TypeOfClass), requirementViewModel.TypeOfClass);
+            
+            SaveChangesToDB();
+
+            return "Requirement Updated";
+        }
+
+        public async Task<string> UpdateVolunteerRequirement(int volunteerReqId, VolunteerRequirementViewModel requirementViewModel)
+        {
+            var volunteerReq = await _studentContext.StudentRequirements.FirstOrDefaultAsync(id=>id.Id == volunteerReqId);
+
+            if (volunteerReq == null)
+            {
+                return "Requirement doesn't exist";
+            }
+
+            volunteerReq.StartDay = (Days)Enum.Parse(typeof(Days), requirementViewModel.StartDay);
+            volunteerReq.EndDay = (Days)Enum.Parse(typeof(Days), requirementViewModel.EndDay);
+            volunteerReq.StartTime = requirementViewModel.StartTime;
+            volunteerReq.EndTime = requirementViewModel.EndTime;
+            volunteerReq.Subject = requirementViewModel.Subject;
+            volunteerReq.Topic = requirementViewModel.Topic;
+
+            SaveChangesToDB();
+
+            return "Requirement Updated";
+        }
+
+
         #region PRIVATE HELPER METHODS
 
         //This query gets all the student requirement for the particular studnet 

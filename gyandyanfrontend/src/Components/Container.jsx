@@ -7,10 +7,12 @@ import StudentDashBoard from './StudentDashBoard';
 import VolunteerDashBoard from './VolunteerDashBoard';
 import JustLogin from './JustLogin'
 import RequirementAdding from './RequirementAdding';
-
+import UpdateReqTable from './UpdateReqTable';
 import React from 'react'
+import UpdateProfile from './UpdateProfile';
 
 export default function Container() {
+
     return (
         <>
             <div className='container p-5'>
@@ -35,6 +37,18 @@ export default function Container() {
                     <Route path='/requirement' element={
                             <PrivateRoute>
                                 <RequirementAdding/>
+                            </PrivateRoute>
+                        }>    
+                    </Route>
+                    <Route path='/update-requirement/:data' element={
+                            <PrivateRoute>
+                                <UpdateReqTable/>
+                            </PrivateRoute>
+                        }>    
+                    </Route>
+                    <Route path='/update-profile' element={
+                            <PrivateRoute>
+                                <UpdateProfile/>
                             </PrivateRoute>
                         }>    
                     </Route>

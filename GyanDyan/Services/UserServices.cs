@@ -3,6 +3,7 @@ using GyanDyan.Exceptions;
 using GyanDyan.Services.Interfaces;
 using GyanDyan.Utils;
 using GyanDyan.ViewModels;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System;
@@ -142,10 +143,72 @@ namespace GyanDyan.Services
             return GenerateVolunteerToken(volunteer);
         }
 
+        //UPDATING STUDENT PROFILE
+        public async Task<string> UpdateStudentProfile(int studentId, ProfileUpdateViewModel studentProfile)
+        {
+            var student = await _user.StudentProfiles.FirstOrDefaultAsync(id=>id.Id == studentId);
 
-        #region PRIVATE METHODS
-        //Returns true if the Volunteer is already registered in VolunteerProfile Table
-        private  bool VolunteerExists(string email)
+            if(student == null)
+            {
+                return $"Student doesn't exist";
+            }
+
+
+            student.FirstName = studentProfile.FirstName;
+            student.LastName = studentProfile.LastName;
+            student.MobileNumber = studentProfile.MobileNumber;
+            student.Email = studentProfile.Email;
+            student.Street = studentProfile.Street;
+            student.State = studentProfile.State;
+            student.City = studentProfile.City;
+            student.Pin = studentProfile.Pin;
+            student.EducationQualification = (EducationQualification)Enum.Parse(typeof(EducationQualification), studentProfile.EducationQualification);
+            
+
+             SaveChangesToDB();
+             return $"Profile Updated";
+        }
+
+
+        //UPDATE VOLUNTEER PROFILE
+        public async Task<string> UpdateVolunteerProfile(int volunteerId, ProfileUpdateViewModel volunteerProfile)
+        {
+            var volunteer = await _user.VolunteerProfiles.FirstOrDefaultAsync(id => id.Id == volunteerId);
+
+            if (volunteer == null)
+            {
+                return $"Volunteer doesn't exist";
+            }
+
+            volunteer.FirstName = volunteerProfile.FirstName;
+            volunteer.LastName = volunteerProfile.LastName;
+            volunteer.MobileNumber = volunteerProfile.MobileNumber;
+            volunteer.Email = volunteerProfile.Email;
+            volunteer.Street = volunteerProfile.Street;
+            volunteer.State = volunteerProfile.State;
+            volunteer.City = volunteerProfile.City;
+            volunteer.Pin = volunteerProfile.Pin;
+            volunteer.EducationQualification = (EducationQualification)Enum.Parse(typeof(EducationQualification), volunteerProfile.EducationQualification);
+            
+
+            SaveChangesToDB();
+            return $"Profile Updated";
+        }
+
+        public async Task<StudentProfile> GetStudentDetails(int studentId)
+        {
+            return await _user.StudentProfiles.FirstOrDefaultAsync(id => id.Id == studentId);
+        }
+
+        public async Task<VolunteerProfile> GetVolunteerDetails(int volunteerId)
+        {
+            return await _user.VolunteerProfiles.FirstOrDefaultAsync(id => id.Id == volunteerId);
+        }
+
+
+            #region PRIVATE METHODS
+            //Returns true if the Volunteer is already registered in VolunteerProfile Table
+            private  bool VolunteerExists(string email)
         {
             return _user.VolunteerProfiles.Any(e => e.Email == email);
         }

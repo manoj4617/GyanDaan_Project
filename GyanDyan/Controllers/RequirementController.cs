@@ -65,5 +65,19 @@ namespace GyanDyan.Controllers
         {
             return await _requirements.ShowAllStudentRequirment(id);
         }
+
+        [Authorize(Policy = StaticProvider.VolunteerPolicy)]
+        [HttpPut("update-volunteer-requirement/{volunteerReqId}")]
+        public async Task<IActionResult> UpdateVolunteerRequirement([FromRoute]int volunteerReqId, [FromBody]VolunteerRequirementViewModel volunteerRequirementView)
+        {
+            return Ok(await _requirements.UpdateVolunteerRequirement(volunteerReqId, volunteerRequirementView));
+        }
+
+        [Authorize(Policy = StaticProvider.StudentPolicy)]
+        [HttpPut("update-student-requirement/{studentReqId}")]
+        public async Task<IActionResult> UpdateStudentRequirement([FromRoute] int studentReqId, [FromBody] StudentRequirementViewModel studentRequirementView)
+        {
+            return Ok(await _requirements.UpdateStudentRequirement(studentReqId, studentRequirementView));
+        }
     }
 }

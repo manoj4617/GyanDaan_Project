@@ -13,5 +13,7 @@ namespace GyanDyan.Services.Interfaces
         Task<IEnumerable<VolunteerRequirement>> GetVolunteerRequirements(int volunteerId);
         Task<IEnumerable<VolunteerRequirement>> ShowAllVolunteerDetailsForStudent(int studentId);
         Task<IEnumerable<StudentRequirement>> ShowAllStudentRequirment(int volunteerId);
+        Task<string> UpdateStudentRequirement(int studentReqId, StudentRequirementViewModel requirementViewModel);
+        Task<string> UpdateVolunteerRequirement(int volunteerReqId, VolunteerRequirementViewModel requirementViewModel);
     }
 }

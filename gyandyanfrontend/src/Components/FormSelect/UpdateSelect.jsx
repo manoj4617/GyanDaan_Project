@@ -1,10 +1,10 @@
 import React from 'react';
 import Select from 'react-select';
 
-export const  GenderSelect=({ onChange, options, value }) => {
+export const  GenderSelectUpdate=({ onChange, options, value }) => {
 
     const defaultValue = (options, value) => {
-        return options ? options.find(option => option.value === value) : "";
+        return options ? options.find(option => option.label === value) : "";
     };
 
     return (
@@ -20,10 +20,10 @@ export const  GenderSelect=({ onChange, options, value }) => {
     )
 }
 
-export const  EducationQualification=({ onChange, options, value }) => {
-
+export const  EducationQualificationUpdate =({ onChange, options, value }) => {
+   
     const defaultValue = (options, value) => {
-        return options ? options.find(option => option.value === value) : "";
+        return options ? options.find(option => option.label === value) : "";
     };
 
     return (
@@ -39,10 +39,10 @@ export const  EducationQualification=({ onChange, options, value }) => {
     )
 }
 
-export const  Days=({ onChange, options, value }) => {
-
+export const  DaysUpdate=({ onChange, options, value }) => {
     const defaultValue = (options, value) => {
-        return options ? options.find(option => option.value === value) : "";
+
+        return options ? options.find(option => option.label === value) : "";
     };
 
     return (
@@ -58,10 +58,10 @@ export const  Days=({ onChange, options, value }) => {
     )
 }
 
-export const  TypeOfClass=({ onChange, options, value }) => {
+export const  TypeOfClassUpdate=({ onChange, options, value }) => {
 
     const defaultValue = (options, value) => {
-        return options ? options.find(option => option.value === value) : "";
+        return options ? options.find(option => option.label === value) : "";
     };
 
     return (
@@ -77,10 +77,10 @@ export const  TypeOfClass=({ onChange, options, value }) => {
     )
 }
 
-export const  TopicSelect =({ onChange, options, value }) => {
+export const  TopicSelectUpdate =({ onChange, options, value }) => {
 
     const defaultValue = (options, value) => {
-        return options ? options.find(option => option.value === value) : "";
+        return options ? options.find(option => option.label === value) : "";
     };
 
     return (
@@ -96,7 +96,7 @@ export const  TopicSelect =({ onChange, options, value }) => {
     )
 }
 
-export const  SubjectSelect =({ onChange, options, value }) => {
+export const  SubjectSelectUpdate =({ onChange, options, value }) => {
 
     const defaultValue = (options, value) => {
         return   options ? options.find(option => option.label === value) : "";

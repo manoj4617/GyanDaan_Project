@@ -170,7 +170,12 @@ body{
     background-color: #fff;
   }
 
-
+  .update-profile{
+    background: transparent;
+    text-decoration: none;
+    border: none;
+    font-size: 22px;
+  }
 
   .flex {
     -webkit-box-flex: 1;
@@ -363,8 +368,8 @@ body{
 }
 
 /*Profile Card 5*/
+
 .profile-card-5{
- 
   margin-top:20px;
 }
 .profile-card-5 .btn{
@@ -400,3 +405,6 @@ body{
   background-color: #4E5E30;
 }
 
+.inbox{
+  margin-left: 70%;
+}

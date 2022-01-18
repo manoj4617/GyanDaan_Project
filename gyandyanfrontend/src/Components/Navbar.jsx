@@ -17,10 +17,10 @@ export default function NavbarItem() {
         <>
           <Navbar bg="dark" expand="lg">
             <Container>
-                <Navbar.Brand className="fs-2 text-primary" href="#home">Gyan Dyan</Navbar.Brand>
+                <Navbar.Brand className="fs-2 text-primary" href="/">Gyan Dyan</Navbar.Brand>
                 <Navbar.Toggle aria-controls="basic-navbar-nav" />
                 <Navbar.Collapse id="basic-navbar-nav">
-                <Nav className="text-white fs-3 nav-text ms-auto">
+                <Nav className="text-white fs-4 p-2 nav-text ms-auto">
                     {!authStatus.isLoggedin ? 
                         <>
                             <Nav.Link className="text-white" href="/">Home</Nav.Link>
