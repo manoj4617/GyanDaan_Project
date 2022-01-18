@@ -2,12 +2,12 @@ import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import { decode } from "../utils/jwt";
 import { httpClient } from "../http/httpclient";
-import { days, typeOfClass } from "./Constants/Constants";
 import accepted from '../Components/images/accepted1.png';
 import pending from '../Components/images/pending2.png';
 import new_request from '../Components/images/new_request2.png';
 import ReqTable from './ReqTable'
 import PendingReq from "./PendingReq";
+import Modal from "./Modal";
 
 export default function StudentDashBoard() {
   const authStatus = useSelector((state) => state.auth);
@@ -90,8 +90,11 @@ export default function StudentDashBoard() {
             <div className="d-inline">
               {Object.keys(invitation).length !== 0 ? (
                 <>
-                  <i className="inbox fa fa-inbox"></i>
-                  <span className="counter counter-lg">{Object.keys(invitation).length}</span>&nbsp;&nbsp;
+                  <button type="button"  className="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter">
+                    <i  className="inbox fa fa-inbox"></i>
+                      <span className="counter counter-lg">{Object.keys(invitation).length}</span>&nbsp;&nbsp;
+                  </button>
+                  <Modal invites = {invitation}/>
                 </>
                 ) : (
                   <i className="inbox fa fa-inbox"></i>

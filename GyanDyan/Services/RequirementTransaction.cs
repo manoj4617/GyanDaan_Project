@@ -153,6 +153,7 @@ namespace GyanDyan.Services
             return await _context.StudentInboxes
                 .Include(i => i.StudentRequirement)
                 .Include(i => i.VolunteerRequirement)
+                .ThenInclude(i => i.VolunteerProfile)
                 .Where(id => id.StudentId == studentId)
                 .ToListAsync();
         }
