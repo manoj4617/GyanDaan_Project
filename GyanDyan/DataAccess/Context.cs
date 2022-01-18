@@ -17,13 +17,14 @@ namespace GyanDyan.DataAccess
         public DbSet<OneToOne> OneToOneClass { get; set; }
         public DbSet<Group> GroupsClass { get; set; }
         public DbSet<VolunteerInbox> VolunteerInboxes { get; set; }
-        //public DbSet<Schedule> Schedules { get; set; }
+        public DbSet<StudentInbox> StudentInboxes { get; set; }
 
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+
 
         }
 

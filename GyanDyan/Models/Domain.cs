@@ -30,6 +30,7 @@ namespace GyanDyan.Models
             public IList<OneToOne> OneToOne { get; set; }
             public IList<Group> InGroupStudent { get; set; }
             public List<VolunteerInbox> VolunteerInboxes { get; set; }
+            public List<StudentInbox> StudentInboxes { get; set; }
         }
 
         public class StudentRequirement
@@ -37,17 +38,19 @@ namespace GyanDyan.Models
             public int Id { get; set; }
             public int StudentProfileId { get; set; }
             public StudentProfile StudentProfile { get; set; }
-            public DateTime PostedOnDate { get; set; }
+            public string PostedOnDate { get; set; }
             public Days StartDay { get; set; }
             public Days EndDay { get; set; }
             public string StartTime { get; set; }
             public string EndTime { get; set; }
+            public string Subject { get; set; }
             public string Topic { get; set; }
             public DateTime TimeOfStart { get; set; }
             public TypeOfClass TypeOfClass { get; set; }
             public bool AcceptedByVolunteer { get; set; }
             public OneToOne OneToOne { get; set; }
-
+            public Group Group { get; set; }
+            public StudentInbox StudentInbox { get; set; }
         }
 
         public class VolunteerProfile
@@ -67,9 +70,10 @@ namespace GyanDyan.Models
             public string State { get; set; }
             public long Pin { get; set; }
             public EducationQualification EducationQualification { get; set; }
-            public IList<VolunteerRequirement> VolunteerRequirements { get; set; }
-            public IList<OneToOne> OneToOnes { get; set; }
-            public IList<VolunteerInbox> VolunteerInboxes { get; set; }
+            public List<VolunteerRequirement> VolunteerRequirements { get; set; }
+            public List<OneToOne> OneToOnes { get; set; }
+            public List<VolunteerInbox> VolunteerInboxes { get; set; }
+            public List<StudentInbox> StudentInboxes { get; set; }
         }
 
         public class VolunteerRequirement
@@ -77,8 +81,9 @@ namespace GyanDyan.Models
             public int Id { get; set; }
             public int VolunteerProfileId { get; set; }
             public VolunteerProfile VolunteerProfile { get; set; }
-            public DateTime PostedOnDate { get; set; }
-            public string AreaOfSpecialization { get; set; }
+            public string PostedOnDate { get; set; }
+            public string Subject { get; set; }
+            public string Topic { get; set; }
             public TypeOfClass TypeOfClass { get; set; }
             public Days StartDay { get; set; }
             public Days EndDay { get; set; }
@@ -88,6 +93,7 @@ namespace GyanDyan.Models
             public OneToOne OneToOnes { get; set; }
             public List<Group> InGroupVolunteer { get; set; }
             public List<VolunteerInbox> VolunteerInboxes { get; set; }
+            public List<StudentInbox> StudentInboxes { get; set; }
         }
 
         public class OneToOne
@@ -103,7 +109,7 @@ namespace GyanDyan.Models
             public StudentRequirement StudentRequirement { get; set; }
 
             //Populated when Student posts the request
-            public int? VolunteerId { get; set; }
+            public int? VolunteerProfileId { get; set; }
             public VolunteerProfile VolunteerProfile { get; set; }
 
             //Populated when volunteer posts the request
@@ -116,6 +122,8 @@ namespace GyanDyan.Models
             public int Id { get; set; }
             public int? VolunteerRequirementId { get; set; }
             public VolunteerRequirement VolunteerRequirement { get; set; }
+            public int?  StudentRequirementId { get; set; }
+            public StudentRequirement StudentRequirement { get; set; }
             public int? StudentId { get; set; }
             public StudentProfile StudentProfile { get; set; }
         }
@@ -130,6 +138,19 @@ namespace GyanDyan.Models
 
             public int StudentId { get; set; }
             public StudentProfile StudentProfile { get; set; }
+        }
+
+        public class StudentInbox
+        {
+            public int Id { get; set; }
+            public int StudentId { get; set; }
+            public StudentProfile StudentProfile { get; set; }
+            public int StudentRequirementId { get; set; }
+            public StudentRequirement StudentRequirement { get; set; }
+            public int VolunteerId{ get; set; }
+            public VolunteerProfile VolunteerProfile { get; set; }
+            public int VolunteerRequirementId { get; set; }
+            public VolunteerRequirement VolunteerRequirement { get; set; }
         }
 
         #region <ENUMS>
@@ -159,7 +180,8 @@ namespace GyanDyan.Models
         public enum Gender
         {
             Female,
-            Male
+            Male,
+            Other
         }
         #endregion
     }

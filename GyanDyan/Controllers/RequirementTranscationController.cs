@@ -48,5 +48,47 @@ namespace GyanDyan.Controllers
         {
             return await _requirementTranscation.GetAllNotificationsForVolunteer(reqid);
         }
+
+        [Authorize(Policy = StaticProvider.VolunteerPolicy)]
+        [HttpGet("accept-student-request/{studentRequirementId}/{volunteerId}")]
+        public async Task<List<VolunteerRequirement>> AcceptStudentRequirement(int studentRequirementId, int volunteerId)
+        {
+            return await _requirementTranscation.AcceptStudentRequirement(studentRequirementId, volunteerId);
+        }
+
+        [Authorize(Policy = StaticProvider.VolunteerPolicy)]
+        [HttpGet("send-inviteTo-student/{studentReqId}/{volunteerReqId}")]
+        public async Task<string> InviteThisStudent([FromRoute] int studentReqId, [FromRoute] int volunteerReqId)
+        {
+            return await _requirementTranscation.InviteThisStudentReq(studentReqId, volunteerReqId);
+        }
+
+        [Authorize(Policy = StaticProvider.StudentPolicy)]
+        [HttpGet("get-invitesfor-student/{studentId}")]
+        public async Task<List<StudentInbox>> GetStudentInboxesAsync([FromRoute]int studentId)
+        {
+            return await _requirementTranscation.GetInvitationsForStudent(studentId);
+        }
+
+        [Authorize(Policy = StaticProvider.StudentPolicy)]
+        [HttpGet("get-pending/{studentId}")]
+        public async Task<List<VolunteerInbox>> GetVolunteerReqForStudent(int studentId)
+        {
+            return await _requirementTranscation.GetReqListForStudents(studentId);
+        }
+
+        [Authorize(Policy = StaticProvider.StudentPolicy)]
+        [HttpGet("accept-invite/{inviteId}")]
+        public async Task<string> AcceptInvitation([FromRoute]int inviteId)
+        {
+            return await _requirementTranscation.AcceptInvitation(inviteId);
+        }
+
+        [Authorize(Policy = StaticProvider.StudentPolicy)]
+        [HttpGet("reject-invite/{inviteId}")]
+        public async Task<string> RejectInvitation([FromRoute] int inviteId)
+        {
+            return  _requirementTranscation.RejectedInvitation(inviteId);
+        }
     }
 }

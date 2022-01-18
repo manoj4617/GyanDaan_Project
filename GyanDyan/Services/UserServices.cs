@@ -3,6 +3,7 @@ using GyanDyan.Exceptions;
 using GyanDyan.Services.Interfaces;
 using GyanDyan.Utils;
 using GyanDyan.ViewModels;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System;
@@ -30,11 +31,12 @@ namespace GyanDyan.Services
 
 
         //REGISTERING NEW VOLUNTEER
-        public async Task VolunteerRegister(VolunteerRegisterViewModel volunteerRegisterView)
+        public async Task<string> VolunteerRegister(VolunteerRegisterViewModel volunteerRegisterView)
         {
             //checks if the volunteer already exists
             if (VolunteerExists(volunteerRegisterView.Email))
             {
+                return $"Volunteer with {volunteerRegisterView.Email} email id already exists";
                 throw new DuplicateUserException($"Volunteer with {volunteerRegisterView.Email} already exists");
             }
 
@@ -64,14 +66,16 @@ namespace GyanDyan.Services
 
             await _user.VolunteerProfiles.AddAsync(volunteer);
             SaveChangesToDB();
+            return $"Account Creation Successful.";
         }
 
         //REGISTERING NEW STUDENT
-        public async Task StudentRegister(StudentRegisterViewModel studentRegisterView)
+        public async Task<string> StudentRegister(StudentRegisterViewModel studentRegisterView)
         {
             //checks if the student already exists
             if (StudentExists(studentRegisterView.Email))
             {
+                return $"Student with {studentRegisterView.Email} email id already exists";
                 throw new DuplicateUserException($"Student with {studentRegisterView.Email} already exists");
             }
 
@@ -102,6 +106,7 @@ namespace GyanDyan.Services
 
             await _user.StudentProfiles.AddAsync(student);
             SaveChangesToDB();
+            return $"Account Creation Successful.";
         }
 
         //SIGNING USER
@@ -138,10 +143,72 @@ namespace GyanDyan.Services
             return GenerateVolunteerToken(volunteer);
         }
 
+        //UPDATING STUDENT PROFILE
+        public async Task<string> UpdateStudentProfile(int studentId, ProfileUpdateViewModel studentProfile)
+        {
+            var student = await _user.StudentProfiles.FirstOrDefaultAsync(id=>id.Id == studentId);
 
-        #region PRIVATE METHODS
-        //Returns true if the Volunteer is already registered in VolunteerProfile Table
-        private  bool VolunteerExists(string email)
+            if(student == null)
+            {
+                return $"Student doesn't exist";
+            }
+
+
+            student.FirstName = studentProfile.FirstName;
+            student.LastName = studentProfile.LastName;
+            student.MobileNumber = studentProfile.MobileNumber;
+            student.Email = studentProfile.Email;
+            student.Street = studentProfile.Street;
+            student.State = studentProfile.State;
+            student.City = studentProfile.City;
+            student.Pin = studentProfile.Pin;
+            student.EducationQualification = (EducationQualification)Enum.Parse(typeof(EducationQualification), studentProfile.EducationQualification);
+            
+
+             SaveChangesToDB();
+             return $"Profile Updated";
+        }
+
+
+        //UPDATE VOLUNTEER PROFILE
+        public async Task<string> UpdateVolunteerProfile(int volunteerId, ProfileUpdateViewModel volunteerProfile)
+        {
+            var volunteer = await _user.VolunteerProfiles.FirstOrDefaultAsync(id => id.Id == volunteerId);
+
+            if (volunteer == null)
+            {
+                return $"Volunteer doesn't exist";
+            }
+
+            volunteer.FirstName = volunteerProfile.FirstName;
+            volunteer.LastName = volunteerProfile.LastName;
+            volunteer.MobileNumber = volunteerProfile.MobileNumber;
+            volunteer.Email = volunteerProfile.Email;
+            volunteer.Street = volunteerProfile.Street;
+            volunteer.State = volunteerProfile.State;
+            volunteer.City = volunteerProfile.City;
+            volunteer.Pin = volunteerProfile.Pin;
+            volunteer.EducationQualification = (EducationQualification)Enum.Parse(typeof(EducationQualification), volunteerProfile.EducationQualification);
+            
+
+            SaveChangesToDB();
+            return $"Profile Updated";
+        }
+
+        public async Task<StudentProfile> GetStudentDetails(int studentId)
+        {
+            return await _user.StudentProfiles.FirstOrDefaultAsync(id => id.Id == studentId);
+        }
+
+        public async Task<VolunteerProfile> GetVolunteerDetails(int volunteerId)
+        {
+            return await _user.VolunteerProfiles.FirstOrDefaultAsync(id => id.Id == volunteerId);
+        }
+
+
+            #region PRIVATE METHODS
+            //Returns true if the Volunteer is already registered in VolunteerProfile Table
+            private  bool VolunteerExists(string email)
         {
             return _user.VolunteerProfiles.Any(e => e.Email == email);
         }
@@ -185,14 +252,14 @@ namespace GyanDyan.Services
         //Generates token for Student
         private TokenViewModel GenerateStudentToken(StudentProfile student)
         {
-            var claims = GetClaims(student.Email,student.FirstName,student.LastName,StaticProvider.StudentPolicy);
+            var claims = GetClaims(student.Id,student.Email,student.FirstName,student.LastName,StaticProvider.StudentPolicy);
             return GetToken(claims);
         }
 
         //Generates token for Volunteer
         private TokenViewModel GenerateVolunteerToken(VolunteerProfile volunteer)
         {
-            var claims = GetClaims(volunteer.Email, volunteer.FirstName, volunteer.LastName, StaticProvider.VolunteerPolicy);
+            var claims = GetClaims(volunteer.Id,volunteer.Email, volunteer.FirstName, volunteer.LastName, StaticProvider.VolunteerPolicy);
             return GetToken(claims);
         }
 
@@ -222,10 +289,11 @@ namespace GyanDyan.Services
         }
 
         //This generates the claims
-        private List<Claim> GetClaims(string email, string firstName, string lastName, string policy)
+        private List<Claim> GetClaims(int id,string email, string firstName, string lastName, string policy)
         {
             return new List<Claim>()
             {
+                new Claim("Id",$"{id}"),
                 new Claim(ClaimTypes.Email, email),
                 new Claim(ClaimTypes.Name,$"{firstName} {lastName}"),
                 new Claim("Roles",$"{policy}")

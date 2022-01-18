@@ -1,0 +1,29 @@
+{
+  "mathematics": {
+    "0": "algebra",
+    "1": "analysis",
+    "2": "arithmetic",
+    "3": "calculus",
+    "4": "combinatorial",
+    "5": "gametheory",
+    "6": "cryptography",
+    "7": "differential equations",
+    "8": "partial differential equations",
+    "9": "ordinary differential equations",
+    "10": "discrete mathematics",
+    "11": "geometry",
+    "12": "graphtheory",
+    "13": "infinity",
+    "14": "linear algebra",
+    "15": "number theory",
+    "16": "numerical analysis",
+    "17": "numerical integration",
+    "18": "numerical linear algebra",
+    "19": "validated numerics",
+    "20": "order of operations",
+    "21": "probability",
+    "22": "statistics",
+    "23": "topology",
+    "24": "trigonometry"
+  }
+}
