@@ -143,14 +143,19 @@ namespace GyanDyan.Services
                 .Select(vid => vid.StudentRequirement)
                 .ToList();
 
+            var checkGroup = _studentContext.GroupsClass
+                .Where(id => id.VolunteerProfileId == volunteerId)
+                .Select(sid => sid.StudentRequirement)
+                .ToList();
             //Gets all the student requirements
-            var r = await _studentContext.StudentRequirements.ToListAsync();
+            var r = await _studentContext.StudentRequirements.Include(i => i.StudentProfile).ToListAsync();
 
 
             if (checkOneToOne != null)
             {
                 //excludes the student requirements those which the volunteer has already accepted
                 IEnumerable<StudentRequirement> requirement = r.Except(checkOneToOne);
+                requirement = requirement.Except(checkGroup);
                 return requirement;
             }
             return null;

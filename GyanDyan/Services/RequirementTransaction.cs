@@ -68,7 +68,8 @@ namespace GyanDyan.Services
                     var addInGroup = new Group()
                     {
                         VolunteerRequirementId = i.VolunteerRequirement.Id,
-                        StudentId = i.StudentId
+                        StudentId = i.StudentId,
+                        VolunteerProfileId = i.VolunteerId
                     };
                     await _context.GroupsClass.AddAsync(addInGroup);
                     RemoveNotification(volunteerID, requirementId, studentId);
@@ -88,6 +89,7 @@ namespace GyanDyan.Services
         {
             return await _context.VolunteerInboxes
                  .Where(id => id.VolunteerId == volunteerId)
+                 .Include(i => i.StudentProfile)
                  .Select(v => new SendNotificationDetials()
                  {
                      StudentProfile = _context.StudentProfiles.Where(id => id.Id == v.StudentId)
@@ -97,7 +99,7 @@ namespace GyanDyan.Services
                  .ToListAsync();
         }
 
-        public async Task<List<VolunteerRequirement>> AcceptStudentRequirement(int studentRequirementId, int volunteerId)
+        public async Task<IEnumerable<VolunteerRequirement>> AcceptStudentRequirement(int studentRequirementId, int volunteerId)
         {
             var getStudentTypeOfClass = _context.StudentRequirements
                 .Where(rid => rid.Id == studentRequirementId)
@@ -106,15 +108,21 @@ namespace GyanDyan.Services
             var volunteerRequirement = await _context.VolunteerRequirements
                 .Where(id => id.VolunteerProfileId == volunteerId
                         && id.Subject == getStudentTypeOfClass.Subject 
+                        && id.TypeOfClass == getStudentTypeOfClass.TypeOfClass
                         || id.Topic == getStudentTypeOfClass.Topic)
                     .ToListAsync();
 
+            var studentInbox = await _context.StudentInboxes
+                .Where(id => id.StudentRequirementId == studentRequirementId && id.VolunteerId == volunteerId)
+                .Select(id => id.VolunteerRequirement)
+                .ToListAsync();
+            IEnumerable<VolunteerRequirement> newvolunteerRequirement = volunteerRequirement.Except(studentInbox);
             if (volunteerRequirement == null)
             {
                 return null;
             }
 
-            return volunteerRequirement;
+            return newvolunteerRequirement;
         }
 
         public async Task<string> InviteThisStudentReq(int studentReqId, int volunteerReqId)
@@ -148,6 +156,14 @@ namespace GyanDyan.Services
                 .ToListAsync();
         }
 
+        public async Task<List<StudentInbox>> GetReqListForVolunteer(int volunteerId)
+        {
+            return await _context.StudentInboxes
+                .Where(id => id.VolunteerId == volunteerId)
+                .Include(i => i.StudentRequirement)
+                .ToListAsync();
+        }
+
         public async Task<List<StudentInbox>> GetInvitationsForStudent(int studentId)
         {
             return await _context.StudentInboxes
@@ -177,7 +193,8 @@ namespace GyanDyan.Services
                 {
                     VolunteerRequirementId = getInvite.VolunteerRequirementId,
                     StudentRequirementId = getInvite.StudentRequirementId,
-                    StudentId = getInvite.StudentId
+                    StudentId = getInvite.StudentId,
+                    VolunteerProfileId = getInvite.VolunteerRequirement.VolunteerProfileId
                 };
                 await _context.GroupsClass.AddAsync(addInGroupClass);
                 getStudentReq.AcceptedByVolunteer = true;

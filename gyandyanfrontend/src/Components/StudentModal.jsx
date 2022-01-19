@@ -3,7 +3,7 @@ import {typeOfClass} from './Constants/Constants'
 import { httpClient } from "../http/httpclient";
 
 
-export default function Modal(props) {
+export default function StudentModal(props) {
 
     const [message, setmessage] = useState();
 
@@ -39,6 +39,8 @@ export default function Modal(props) {
                         {message != null ? (
                             <h5 className='text-center font-weight-bold text-primary'>{message}</h5>
                         ) : null}
+
+    
                         {props.invites.map((item,index) => (
                             <ul class="list-group">
                                 <li class="list-group-item fs-6">

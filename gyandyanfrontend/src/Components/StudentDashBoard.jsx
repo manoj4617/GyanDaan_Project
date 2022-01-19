@@ -7,7 +7,7 @@ import pending from '../Components/images/pending2.png';
 import new_request from '../Components/images/new_request2.png';
 import ReqTable from './ReqTable'
 import PendingReq from "./PendingReq";
-import Modal from "./Modal";
+import SecondNavbar from "./SecondNavbar";
 
 export default function StudentDashBoard() {
   const authStatus = useSelector((state) => state.auth);
@@ -74,36 +74,11 @@ export default function StudentDashBoard() {
 
   return (
     <>
-      <div className="container dis-name">
-        <div className="row align-items-center">
-          <div className="col-6">
-          <div className="card w-100 bg-transparent fs-3 m-2">
-            <div className="d-inline dis-name card-body">
-              Welcome {userInfo.unique_name} !
-            </div>
-          </div>
-          </div>
-          <div className="col-sm ml-5 justify-content-end">
-            <a href="/update-profile" className="update-profile">Update Profile</a>
-          </div>
-          <div className="col-sm justify-content-center">
-            <div className="d-inline">
-              {Object.keys(invitation).length !== 0 ? (
-                <>
-                  <button type="button"  className="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter">
-                    <i  className="inbox fa fa-inbox"></i>
-                      <span className="counter counter-lg">{Object.keys(invitation).length}</span>&nbsp;&nbsp;
-                  </button>
-                  <Modal invites = {invitation}/>
-                </>
-                ) : (
-                  <i className="inbox fa fa-inbox"></i>
-                )}
-            </div>
-          </div>
-        </div>
-      </div>
-
+      <SecondNavbar 
+        name = {userInfo.unique_name}
+        invites = {invitation}
+      />
+    
       {/* Card  */}
       <section>
         <div className="container">

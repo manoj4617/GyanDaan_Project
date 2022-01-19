@@ -72,6 +72,7 @@ namespace GyanDyan.Models
             public EducationQualification EducationQualification { get; set; }
             public List<VolunteerRequirement> VolunteerRequirements { get; set; }
             public List<OneToOne> OneToOnes { get; set; }
+            public List<Group> Groups { get; set; }
             public List<VolunteerInbox> VolunteerInboxes { get; set; }
             public List<StudentInbox> StudentInboxes { get; set; }
         }
@@ -120,6 +121,8 @@ namespace GyanDyan.Models
         public class Group
         {
             public int Id { get; set; }
+            public int? VolunteerProfileId { get; set; }
+            public VolunteerProfile VolunteerProfile { get; set; }
             public int? VolunteerRequirementId { get; set; }
             public VolunteerRequirement VolunteerRequirement { get; set; }
             public int?  StudentRequirementId { get; set; }
