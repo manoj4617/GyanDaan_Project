@@ -2,9 +2,9 @@ import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import { decode } from "../utils/jwt";
 import { httpClient } from "../http/httpclient";
-import accepted from '../Components/images/accepted1.png';
-import pending from '../Components/images/pending2.png';
-import new_request from '../Components/images/new_request2.png';
+import accepted from '../Components/images/accepted1_1.png';
+import pending from '../Components/images/pending2_1.png';
+import new_request from '../Components/images/new_request2_1.png';
 import ReqTable from './ReqTable'
 import PendingReq from "./PendingReq";
 import SecondNavbar from "./SecondNavbar";
@@ -78,42 +78,45 @@ export default function StudentDashBoard() {
         name = {userInfo.unique_name}
         invites = {invitation}
       />
+
     
       {/* Card  */}
       <section>
         <div className="container">
           <div className="row">
-            <div className="col-md-4 mt-4">
+            <div className="col-md-3 mt-3">
               <div className="card profile-card-5" >
                 <div className="card-img-block">
                   <img className="card-img-top" src={accepted} alt="Card image cap" />
                 </div>
                 <div className="card-body pt-0">
                   <h5 className="card-title">Your Requests </h5>
-                  <p className="card-text">Shows the detail view of accepted requests from volunteer.</p>
+                  <p className="card-text">Shows the detail view of your requests.</p>
                   <button className="btn btn-primary" onClick={()=>setShowReqTable(true)}>View</button>
                 </div>
               </div>
             </div>
-            <div className="col-md-4 mt-4">
+            <div className="col-md-1 mt-1"></div>
+            <div className="col-md-3 mt-3">
               <div className="card profile-card-5" >
                 <div className="card-img-block">
                   <img className="card-img-top" src={pending} alt="Card image cap" />
                 </div>
                 <div className="card-body pt-0">
-                  <h5 className="card-title">Pending Requests </h5>
+                  <h5 className="card-title">Pending Requests</h5>
                   <p className="card-text">Shows the detail view of pending requests from volunteer.</p>
                   <button  className="btn btn-primary" onClick={()=>setshowPendingTable(true)}>View</button>
                 </div>
               </div>
             </div>
-            <div className="col-md-4 mt-4">
+            <div className="col-md-1 mt-1"></div>
+            <div className="col-md-3 mt-3">
               <div className="card profile-card-5" >
                 <div className="card-img-block">
                   <img className="card-img-top" src={new_request} alt="Card image cap" />
                 </div>
                 <div className="card-body pt-0">
-                  <h5 className="card-title">Add New Requriment </h5>
+                  <h5 className="card-title">Add New Requriment</h5>
                   <p className="card-text">Add new requirement of your interest.</p>
                   <a href="/requirement" className="btn btn-primary">ADD</a>
                 </div>
@@ -132,17 +135,27 @@ export default function StudentDashBoard() {
 
       <div className="space" style={{ "paddingTop": "20px", "paddingBottom": "20px" }}></div>
       {message !== "nothing" ? (
-        <>
-          <div
-            className="alert alert-warning alert-dismissible fade show"
-
-            role="alert"
-          >
-            <button type="button" className="close" data-dismiss="alert">&times;</button>
-            {message}
-          </div>
-
-        </>
+        <> 
+        {/* // <!-- Modal HTML --> */}
+          <div id="myModal" className="modal fade">
+            <div className="modal-dialog modal-confirm">
+              <div className="modal-content">
+                <div className="modal-header">
+                  <div className="icon-box">
+                    <i className="material-icons">&#xE5CD;</i>
+                  </div>				
+                  <h4 className="modal-title" style={{"paddingLeft":"88px"}}>Opps!</h4>	
+                </div>
+                <div className="modal-body">
+                  <p className="text-center">Your request is still pending.</p>
+                </div>
+                <div className="modal-footer">
+                  <button className="btn btn-success btn-block" data-dismiss="modal">OK</button>
+                </div>
+              </div>
+            </div>
+          </div>   
+        </>  
       ) : null}
       <div className="container">
         <div className="row">
@@ -182,8 +195,7 @@ export default function StudentDashBoard() {
                         <td>{item.topic}</td>
                         <td>
                           <button
-                            type="button"
-                            className="btn btn-warning"
+                            href="#myModal" className="btn btn-warning" data-toggle="modal" type="submit"
                             onClick={() =>
                               sendRequest(
                                 item.volunteerProfileId,

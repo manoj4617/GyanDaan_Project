@@ -21,23 +21,26 @@ export default function SecondNavbar(props) {
     }, [role]);
     return (
         <>
-            <nav class="navbar navbar-expand-lg navbar-light">
-                <p class="navbar-brand fs-4">Welcome {props.name}!!!</p>
-                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-
-                <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                    <ul class="navbar-nav  ms-auto">
-                    <li class="nav-item mr-5 fs-4 p-2">
-                            <a class="nav-link" href="/update-profile">Update Profile</a>
-                    </li>
-                    <li class="nav-item m-auto">
+            {/* <!-- Navbar --> */}
+            <nav className="navbar navbar-expand-sm  bg-light navbar-light">
+              <div className="container">
+               
+               
+                <div className="collapse navbar-collapse" id="navbarSupportedContent">
+                  
+                    
+                    <p class="navbar-brand fs-2 ">Welcome {props.name}!!!</p>
+                   
+                    <ul className="navbar-nav ms-auto align-items-center">
+                    <li className="nav-item">
+                    
                     {Object.keys(props.invites).length !== 0 ? (
                             <>
-                                <button type="button"  className="btn btn-success" data-toggle="modal" data-target="#exampleModalCenter">
-                                    Invites <span className="badge badge-pill badge-info">{Object.keys(props.invites).length}</span>
-                                </button>
+                                <li className="nav-item">
+                                
+                                <a className="nav-link mx-2 " href="#!"><i className="fas fa-bell pe-2" data-toggle="modal" data-target="#exampleModalCenter"><span className="badge badge-pill badge-info">{Object.keys(props.invites).length}</span></i>Alerts</a>
+                                </li>
+                                
                                 {role === "Student" ? (
                                         <StudentModal invites={props.invites}/>
                                     ) : (
@@ -45,14 +48,22 @@ export default function SecondNavbar(props) {
                                     )}
                             </>
                             ) : (
-                                <button type="button"  className="btn btn-success disabled" data-toggle="modal" data-target="#exampleModalCenter">
-                                Invites <span className="badge badge-pill badge-info">{Object.keys(props.invites).length}</span>
-                            </button>
+                                <li className="nav-item">
+                                <a className="nav-link mx-2 " href="#!"><i className="fas fa-bell pe-2">{Object.keys(props.invites).length}</i>Alerts</a>
+                                </li>
                         )}
+                    
+
                     </li>
-                    </ul>
+                    
+                    <li className="nav-item ms-3 ">
+                      <a className="btn btn-black btn-rounded" href="/update-profile">Update Profile</a>
+                    </li>
+                  </ul>
                 </div>
-                </nav>
+              </div>
+            </nav>
+{/* <!-- Navbar --> */}
         </>
     )
 }

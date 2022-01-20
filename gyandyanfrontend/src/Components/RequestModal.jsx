@@ -22,7 +22,7 @@ export default function RequestModal(props) {
         <>
             <div className="modal fade" id="ModalCenter" tabindex="-1" role="dialog" aria-labelledby="ModalCenterTitle" aria-hidden="true">
                 <div className="modal-dialog modal-dialog-centered" role="document">
-                    <div className="modal-content">
+                    <div className="modal-content" style={{"backgroundColor":"burlywood"}}>
                     <div className="modal-header">
                         <h5 className="modal-title text-black" id="ModalLongTitle">You can Invite to these requirement</h5>
                         <button type="button" className="close" data-dismiss="modal" aria-label="Close">
@@ -37,9 +37,9 @@ export default function RequestModal(props) {
     
                         {props.requests.map((item,index) => (
                             <ul className="list-group">
-                                <li className="list-group-item fs-6">
+                            <li className="list-group-item fs-6 bg-dark">
                                     <div className="card" style={{"width": "24rem"}}>
-                                        <div className="card-body">
+                                        <div className="card-body" style={{"backgroundColor":"darkgray","borderRadius":"6px"}}>
                                             <h5 className="card-title">{item.subject}</h5>
                                             <h6 className="card-subtitle mb-2 text-muted">{item.topic}</h6>
                                             <p className="card-text">Class type : {typeOfClass[item.typeOfClass]}</p>

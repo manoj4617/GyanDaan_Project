@@ -87,11 +87,29 @@ export default function UpdateProfile(props) {
   return (
     <>
      {message != null ?  (
-              <div class="card w-25 mx-auto mb-3 h-25 bg-transparent text-center font-weight-bold fs-5">
-              <div class="card-body">
-                  {message}
-              </div>
-            </div>  
+              
+              <> 
+              {/* // <!-- Modal HTML --> */}
+                <div id="myModal" className="modal fade">
+                  <div className="modal-dialog modal-confirm">
+                    <div className="modal-content">
+                      <div className="modal-header">
+                        <div className="icon-box">
+                          <i className="material-icons">&#xE876;</i>
+                        </div>				
+                        <h4 className="modal-title" style={{"paddingLeft":"88px"}}>Done!</h4>	
+                      </div>
+                      <div className="modal-body">
+                        <p className="text-center">Your profile has been updated successfully.</p>
+                      </div>
+                      <div className="modal-footer">
+                        <button className="btn btn-success btn-block" data-dismiss="modal">OK</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>   
+              </>  
+            
             ) : null}    
 
       <div className="forms w-50 p-3 auto mx-auto my-auto mb-5">
@@ -267,7 +285,7 @@ export default function UpdateProfile(props) {
               </div>
             </div>
           </div>
-          <button className="btn btn-primary" type="submit">
+          <button  href="#myModal" className="btn btn-warning" data-toggle="modal" type="submit">
             Update
           </button>
         </form>

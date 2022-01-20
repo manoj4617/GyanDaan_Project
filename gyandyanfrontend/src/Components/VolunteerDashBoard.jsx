@@ -82,47 +82,50 @@ export default function VolunteerDashBoard() {
                 invites = {invitation}
             />
             {/* Card  */}
+
             <section>
-                <div className="container">
+              <div className="container">
                 <div className="row">
-                    <div className="col-md-4 mt-4">
+                  <div className="col-md-3 mt-3">
                     <div className="card profile-card-5" >
-                        <div className="card-img-block">
+                      <div className="card-img-block">
                         <img className="card-img-top" src={accepted} alt="Card image cap" />
-                        </div>
-                        <div className="card-body pt-0">
+                      </div>
+                      <div className="card-body pt-0">
                         <h5 className="card-title">Your Requests </h5>
-                        <p className="card-text">Shows the detail view of accepted requests from volunteer.</p>
+                        <p className="card-text">Shows the detail view of your requests.</p>
                         <button className="btn btn-primary" onClick={()=>setShowReqTable(true)}>View</button>
-                        </div>
+                      </div>
                     </div>
-                    </div>
-                    <div className="col-md-4 mt-4">
+                  </div>
+                  <div className="col-md-1 mt-1"></div>
+                  <div className="col-md-3 mt-3">
                     <div className="card profile-card-5" >
-                        <div className="card-img-block">
+                      <div className="card-img-block">
                         <img className="card-img-top" src={pending} alt="Card image cap" />
-                        </div>
-                        <div className="card-body pt-0">
-                        <h5 className="card-title">Pending Requests </h5>
-                        <p className="card-text">Shows the detail view of pending requests from volunteer.</p>
+                      </div>
+                      <div className="card-body pt-0">
+                        <h5 className="card-title">Pending Requests</h5>
+                        <p className="card-text">Shows the detail view of pending requests from student.</p>
                         <button  className="btn btn-primary" onClick={()=>setshowPendingTable(true)}>View</button>
-                        </div>
+                      </div>
                     </div>
-                    </div>
-                    <div className="col-md-4 mt-4">
+                  </div>
+                  <div className="col-md-1 mt-1"></div>
+                  <div className="col-md-3 mt-3">
                     <div className="card profile-card-5" >
-                        <div className="card-img-block">
+                      <div className="card-img-block">
                         <img className="card-img-top" src={new_request} alt="Card image cap" />
-                        </div>
-                        <div className="card-body pt-0">
-                        <h5 className="card-title">Add New Requriment </h5>
+                      </div>
+                      <div className="card-body pt-0">
+                        <h5 className="card-title">Add New Requriment</h5>
                         <p className="card-text">Add new requirement of your interest.</p>
                         <a href="/requirement" className="btn btn-primary">ADD</a>
-                        </div>
+                      </div>
                     </div>
-                    </div>
+                  </div>
                 </div>
-                </div>
+              </div>
             </section>
 
             <div className="space" style={{ "paddingTop": "20px", "paddingBottom": "20px" }}></div>
