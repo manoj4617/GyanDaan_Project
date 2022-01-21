@@ -97,7 +97,9 @@ namespace GyanDyan.Services
         {
             var requirements = await _studentContext.VolunteerRequirements.Where(id => id.VolunteerProfileId == volunteerId)
                 .Include(i => i.OneToOnes)
+                .ThenInclude(i => i.StudentProfile)
                 .Include(i => i.InGroupVolunteer)
+                .ThenInclude(i => i.StudentProfile)
                 .ToListAsync();
 
             return requirements;
@@ -108,12 +110,12 @@ namespace GyanDyan.Services
         public async Task<IEnumerable<VolunteerRequirement>> ShowAllVolunteerDetailsForStudent(int studentId)
         {
             //Query to get all the oneToOne classes in which the student is enrolled
-            var checkOneToOne =  _studentContext.OneToOneClass.Where(id => id.StudentId == studentId)
+            var checkOneToOne =  _studentContext.OneToOneClass.Where(id => id.StudentProfileId == studentId)
                 .Select(vid =>  vid.VolunteerRequirement)
                 .ToList();
 
             //Query to get all the group classes in which the student is enrolled
-            var isInGroup = _studentContext.GroupsClass.Where(id => id.StudentId == studentId)
+            var isInGroup = _studentContext.GroupsClass.Where(id => id.StudentProfileId == studentId)
                .Select(vid => vid.VolunteerRequirement)
                .ToList();
 

@@ -57,7 +57,7 @@ namespace GyanDyan.Services
                 {
                     var addInOneToOne = new OneToOne()
                     {
-                        StudentId = i.StudentId,
+                        StudentProfileId = i.StudentId,
                         VolunteerRequirementId = i.VolunteerRequirement.Id
                     };
                     await _context.OneToOneClass.AddAsync(addInOneToOne);
@@ -68,7 +68,7 @@ namespace GyanDyan.Services
                     var addInGroup = new Group()
                     {
                         VolunteerRequirementId = i.VolunteerRequirement.Id,
-                        StudentId = i.StudentId,
+                        StudentProfileId = i.StudentId,
                         VolunteerProfileId = i.VolunteerId
                     };
                     await _context.GroupsClass.AddAsync(addInGroup);
@@ -193,7 +193,7 @@ namespace GyanDyan.Services
                 {
                     VolunteerRequirementId = getInvite.VolunteerRequirementId,
                     StudentRequirementId = getInvite.StudentRequirementId,
-                    StudentId = getInvite.StudentId,
+                    StudentProfileId = getInvite.StudentId,
                     VolunteerProfileId = getInvite.VolunteerRequirement.VolunteerProfileId
                 };
                 await _context.GroupsClass.AddAsync(addInGroupClass);

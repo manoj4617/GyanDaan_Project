@@ -21,18 +21,14 @@ export default function SecondNavbar(props) {
     }, [role]);
     return (
         <>
-            {/* <!-- Navbar --> */}
-            <nav className="navbar navbar-expand-sm  bg-light navbar-light">
-              <div className="container">
-               
-               
+            <nav className="navbar navbar-expand-lg navbar-light w-100 mx-auto">
+                <p className="navbar-brand fs-4">Welcome {props.name}!!!</p>
+                <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <span className="navbar-toggler-icon"></span>
+                </button>
                 <div className="collapse navbar-collapse" id="navbarSupportedContent">
-                  
-                    
-                    <p class="navbar-brand fs-2 ">Welcome {props.name}!!!</p>
                    
                     <ul className="navbar-nav ms-auto align-items-center">
-                    <li className="nav-item">
                     
                     {Object.keys(props.invites).length !== 0 ? (
                             <>
@@ -52,18 +48,13 @@ export default function SecondNavbar(props) {
                                 <a className="nav-link mx-2 " href="#!"><i className="fas fa-bell pe-2">{Object.keys(props.invites).length}</i>Alerts</a>
                                 </li>
                         )}
-                    
-
-                    </li>
-                    
+                                        
                     <li className="nav-item ms-3 ">
                       <a className="btn btn-black btn-rounded" href="/update-profile">Update Profile</a>
                     </li>
                   </ul>
                 </div>
-              </div>
             </nav>
-{/* <!-- Navbar --> */}
         </>
     )
 }

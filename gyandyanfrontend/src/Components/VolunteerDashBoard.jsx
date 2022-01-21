@@ -32,6 +32,7 @@ export default function VolunteerDashBoard() {
             .then((res) => {
               const userInfo = res.data;
               setuserData(userInfo);
+              console.log(userInfo);
             });
     
           httpClient
@@ -85,7 +86,7 @@ export default function VolunteerDashBoard() {
 
             <section>
               <div className="container">
-                <div className="row">
+                <div className="row justify-content-center">
                   <div className="col-md-3 mt-3">
                     <div className="card profile-card-5" >
                       <div className="card-img-block">
@@ -172,7 +173,7 @@ export default function VolunteerDashBoard() {
                             <thead>
                                 <tr>
                                 <th>SL No</th>
-                                <th>From Volunteer</th>
+                                <th>From Student</th>
                                 <th>Subject</th>
                                 <th>Topic</th>
                                 <th>From</th>

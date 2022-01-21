@@ -10,6 +10,7 @@ import RequirementAdding from './RequirementAdding';
 import UpdateReqTable from './UpdateReqTable';
 import React from 'react'
 import UpdateProfile from './UpdateProfile';
+import LookUpStudent from './LookUpModal';
 
 export default function Container() {
 

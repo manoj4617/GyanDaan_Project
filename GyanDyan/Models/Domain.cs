@@ -102,7 +102,7 @@ namespace GyanDyan.Models
             public int Id { get; set; }
 
             //Populated when Volunteer posts the request
-            public int? StudentId { get; set; }
+            public int? StudentProfileId { get; set; }
             public StudentProfile StudentProfile { get; set; }
 
             //Populated when Student posts the request
@@ -127,7 +127,7 @@ namespace GyanDyan.Models
             public VolunteerRequirement VolunteerRequirement { get; set; }
             public int?  StudentRequirementId { get; set; }
             public StudentRequirement StudentRequirement { get; set; }
-            public int? StudentId { get; set; }
+            public int? StudentProfileId { get; set; }
             public StudentProfile StudentProfile { get; set; }
         }
 

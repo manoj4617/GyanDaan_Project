@@ -20,7 +20,7 @@ export default function RequestModal(props) {
 
     return (
         <>
-            <div className="modal fade" id="ModalCenter" tabindex="-1" role="dialog" aria-labelledby="ModalCenterTitle" aria-hidden="true">
+            <div className="modal fade" id="ModalCenter" tabIndex="-1" role="dialog" aria-labelledby="ModalCenterTitle" aria-hidden="true">
                 <div className="modal-dialog modal-dialog-centered" role="document">
                     <div className="modal-content" style={{"backgroundColor":"burlywood"}}>
                     <div className="modal-header">

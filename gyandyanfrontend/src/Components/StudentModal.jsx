@@ -1,5 +1,5 @@
 import React,{useState} from 'react'
-import {typeOfClass} from './Constants/Constants'
+import {typeOfClass,days} from './Constants/Constants'
 import { httpClient } from "../http/httpclient";
 
 
@@ -26,7 +26,7 @@ export default function StudentModal(props) {
 
     return (
         <>
-            <div className="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+            <div className="modal fade" id="exampleModalCenter" tabIndex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
                 <div className="modal-dialog modal-dialog-centered" role="document">
                     <div className="modal-content">
                     <div className="modal-header">
@@ -44,7 +44,8 @@ export default function StudentModal(props) {
                         {props.invites.map((item,index) => (
                             <ul class="list-group">
                                 <li class="list-group-item fs-6">
-                                    <p>You have been invited by {item.volunteerRequirement.volunteerProfile.firstName} to join {item.volunteerRequirement.subject} {typeOfClass[item.volunteerRequirement.typeOfClass]} class for your {item.studentRequirement.subject} requirement</p>
+                                    <p>You have been invited by {item.volunteerRequirement.volunteerProfile.firstName} to join {item.volunteerRequirement.subject} {typeOfClass[item.volunteerRequirement.typeOfClass]} class for your {item.studentRequirement.subject} requirement
+                                    which is from {days[item.volunteerRequirement.startDay]} to {days[item.volunteerRequirement.endDay]} timing from {item.volunteerRequirement.startTime} till {item.volunteerRequirement.endTime}.</p>
                                     <button type="button" onClick={() => acceptinvite(item.id)} className="btn btn-pill btn-success m-1">Accept</button>
                                     <button type="button" onClick={() => rejectInvite(item.id)} className="btn btn-pill btn-danger m-1">Reject</button>
                                 </li>

@@ -9,7 +9,6 @@ import { useSelector } from "react-redux";
 import { decode } from "../utils/jwt";
 import { useParams } from 'react-router-dom';
 
-
 export default function UpdateReqTable(props) {
     var {data} = useParams();
     data = JSON.parse(data);

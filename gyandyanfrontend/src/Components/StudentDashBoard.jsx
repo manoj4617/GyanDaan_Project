@@ -15,7 +15,7 @@ export default function StudentDashBoard() {
   const [userData, setuserData] = useState([]);
   const [volunteerData, setvolunteerData] = useState([]);
   const [inboxData, setinboxData] = useState([]);
-  const [message, setmessage] = useState("nothing");
+  const [message, setmessage] = useState(null);
   const [showReqTable, setShowReqTable] = useState(false);
   const [showPendingTable, setshowPendingTable] = useState(false);
   const [invitation, setinvitation] = useState([]);
@@ -46,7 +46,7 @@ export default function StudentDashBoard() {
         .get(`RequirementTranscation/get-invitesfor-student/${userInfo.Id}`)
         .then((res) => {
           setinvitation(res.data);
-          console.log((res.data).length );
+          console.log(res.data);
         });
     }
     return () => {
@@ -83,7 +83,7 @@ export default function StudentDashBoard() {
       {/* Card  */}
       <section>
         <div className="container">
-          <div className="row">
+          <div className="row  justify-content-center">
             <div className="col-md-3 mt-3">
               <div className="card profile-card-5" >
                 <div className="card-img-block">
@@ -134,23 +134,28 @@ export default function StudentDashBoard() {
       
 
       <div className="space" style={{ "paddingTop": "20px", "paddingBottom": "20px" }}></div>
-      {message !== "nothing" ? (
+      {message !== null ? (
         <> 
         {/* // <!-- Modal HTML --> */}
           <div id="myModal" className="modal fade">
             <div className="modal-dialog modal-confirm">
               <div className="modal-content">
                 <div className="modal-header">
-                  <div className="icon-box">
+                  {message === "Your Request has been sent" ? (
+                    <div className="icon-box">
+                      <i className="material-icons">&#10003;</i>
+                    </div>
+                  ) : (
+                    <div className="icon-box">
                     <i className="material-icons">&#xE5CD;</i>
-                  </div>				
-                  <h4 className="modal-title" style={{"paddingLeft":"88px"}}>Opps!</h4>	
+                    </div>
+                  )}		
                 </div>
                 <div className="modal-body">
-                  <p className="text-center">Your request is still pending.</p>
+                  <p className="text-center">{message}</p>
                 </div>
                 <div className="modal-footer">
-                  <button className="btn btn-success btn-block" data-dismiss="modal">OK</button>
+                  <button onClick={()=>setmessage(null)} className="btn btn-success btn-block" data-dismiss="modal">OK</button>
                 </div>
               </div>
             </div>
