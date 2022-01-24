@@ -55,9 +55,12 @@ namespace GyanDyan.Services
                 //this is to convert string type to enum
                 EducationQualification = (EducationQualification)Enum.Parse(typeof(EducationQualification),volunteerRegisterView.EducationQualification)
             };
+            await _user.VolunteerProfiles.AddAsync(volunteer);
+            SaveChangesToDB();
 
             var voluneerAccount = new VolunteerAccount()
             {
+                VolunteerProfileId = volunteer.Id,
                 JoinedOn = DateTime.Now,
                 DateOfBirth = volunteerRegisterView.DateOfBirth,
                 Street = volunteerRegisterView.Street,
@@ -68,7 +71,7 @@ namespace GyanDyan.Services
                 PasswordHash = passwordHash,
             };
 
-            await _user.VolunteerProfiles.AddAsync(volunteer);
+           
             await _user.VolunteerAccounts.AddAsync(voluneerAccount);
             SaveChangesToDB();
             return $"Account Creation Successful.";
@@ -99,9 +102,12 @@ namespace GyanDyan.Services
                 //this is to convert string type to enum
                 EducationQualification = (EducationQualification)Enum.Parse(typeof(EducationQualification), studentRegisterView.EducationQualification)
             };
+            await _user.StudentProfiles.AddAsync(student);
+            SaveChangesToDB();
 
             var studnetAccount = new StudentAccount()
             {
+                StudentProfileId = student.Id,
                 JoinedOn = DateTime.Now,
                 DateOfBirth = studentRegisterView.DateOfBirth,
                 Street = studentRegisterView.Street,
@@ -113,7 +119,6 @@ namespace GyanDyan.Services
                 IsVolunteer = false
             };
 
-            await _user.StudentProfiles.AddAsync(student);
             await _user.StudentAccounts.AddAsync(studnetAccount);
             SaveChangesToDB();
             return $"Account Creation Successful.";
