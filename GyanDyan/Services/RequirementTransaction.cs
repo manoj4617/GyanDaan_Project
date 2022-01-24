@@ -22,7 +22,7 @@ namespace GyanDyan.Services
         {
             var checkIfNotificationExists = await _context.VolunteerInboxes
                 .Where(id => id.VolunteerRequirementId == volunteerRequirementId
-                && id.StudentId == studentId).FirstOrDefaultAsync();
+                && id.StudentProfileId == studentId).FirstOrDefaultAsync();
 
             if (checkIfNotificationExists != null)
             {
@@ -32,8 +32,8 @@ namespace GyanDyan.Services
             var addtoInbox = new VolunteerInbox()
             {
                 VolunteerRequirementId = volunteerRequirementId,
-                StudentId = studentId,
-                VolunteerId = volunteerId
+                StudentProfileId = studentId,
+                VolunteerProfileId = volunteerId
             };
 
             await _context.VolunteerInboxes.AddAsync(addtoInbox);
@@ -45,10 +45,10 @@ namespace GyanDyan.Services
         public async Task<string> AcceptedByVolunteer(int volunteerID, int requirementId, int studentId)
         {
             var getNotification = await _context.VolunteerInboxes
-               .Where(id => id.VolunteerId == volunteerID
+               .Where(id => id.VolunteerProfileId == volunteerID
                    && id.VolunteerRequirementId == requirementId
-                   && id.StudentId == studentId)
-               .Select(v => new { v.VolunteerRequirement, v.StudentId, v.VolunteerId })
+                   && id.StudentProfileId == studentId)
+               .Select(v => new { v.VolunteerRequirement, v.StudentProfileId, v.VolunteerProfileId })
                .ToListAsync();
 
             foreach (var i in getNotification)
@@ -57,7 +57,7 @@ namespace GyanDyan.Services
                 {
                     var addInOneToOne = new OneToOne()
                     {
-                        StudentProfileId = i.StudentId,
+                        StudentProfileId = i.StudentProfileId,
                         VolunteerRequirementId = i.VolunteerRequirement.Id
                     };
                     await _context.OneToOneClass.AddAsync(addInOneToOne);
@@ -68,8 +68,8 @@ namespace GyanDyan.Services
                     var addInGroup = new Group()
                     {
                         VolunteerRequirementId = i.VolunteerRequirement.Id,
-                        StudentProfileId = i.StudentId,
-                        VolunteerProfileId = i.VolunteerId
+                        StudentProfileId = i.StudentProfileId,
+                        VolunteerProfileId = i.VolunteerProfileId
                     };
                     await _context.GroupsClass.AddAsync(addInGroup);
                     RemoveNotification(volunteerID, requirementId, studentId);
@@ -88,11 +88,11 @@ namespace GyanDyan.Services
         public async Task<List<SendNotificationDetials>> GetAllNotificationsForVolunteer(int volunteerId)
         {
             return await _context.VolunteerInboxes
-                 .Where(id => id.VolunteerId == volunteerId)
+                 .Where(id => id.VolunteerProfileId == volunteerId)
                  .Include(i => i.StudentProfile)
                  .Select(v => new SendNotificationDetials()
                  {
-                     StudentProfile = _context.StudentProfiles.Where(id => id.Id == v.StudentId)
+                     StudentProfile = _context.StudentProfiles.Where(id => id.Id == v.StudentProfileId)
                          .FirstOrDefault(),
                      Volunteer = v.VolunteerRequirement,
                  })
@@ -151,7 +151,7 @@ namespace GyanDyan.Services
         public async Task<List<VolunteerInbox>> GetReqListForStudents(int studentId)
         {
             return await _context.VolunteerInboxes
-                .Where(id => id.StudentId == studentId)
+                .Where(id => id.StudentProfileId == studentId)
                 .Include(i => i.VolunteerRequirement)
                 .ToListAsync();
         }
@@ -226,8 +226,8 @@ namespace GyanDyan.Services
         private void RemoveNotification(int volunteerID,int requirementId, int studentId)
         {
             var toRemove = _context.VolunteerInboxes.Where(id => id.VolunteerRequirementId == requirementId 
-            && id.StudentId == studentId
-            && id.VolunteerId == volunteerID).FirstOrDefault();
+            && id.StudentProfileId == studentId
+            && id.VolunteerProfileId == volunteerID).FirstOrDefault();
             _context.VolunteerInboxes.Remove(toRemove);
             _context.SaveChanges();
         }

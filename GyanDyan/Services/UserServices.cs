@@ -51,20 +51,25 @@ namespace GyanDyan.Services
                 //this is to convert string type to enum
                 Gender = (Gender)Enum.Parse(typeof(Gender), volunteerRegisterView.Gender),
                 MobileNumber = volunteerRegisterView.MobileNumber,
+                Email = volunteerRegisterView.Email,
+                //this is to convert string type to enum
+                EducationQualification = (EducationQualification)Enum.Parse(typeof(EducationQualification),volunteerRegisterView.EducationQualification)
+            };
+
+            var voluneerAccount = new VolunteerAccount()
+            {
                 JoinedOn = DateTime.Now,
                 DateOfBirth = volunteerRegisterView.DateOfBirth,
-                Email = volunteerRegisterView.Email,
                 Street = volunteerRegisterView.Street,
                 State = volunteerRegisterView.State,
                 City = volunteerRegisterView.City,
                 Pin = volunteerRegisterView.Pin,
                 PassowrdSalt = passwordSalt,
                 PasswordHash = passwordHash,
-                //this is to convert string type to enum
-                EducationQualification = (EducationQualification)Enum.Parse(typeof(EducationQualification),volunteerRegisterView.EducationQualification)
             };
 
             await _user.VolunteerProfiles.AddAsync(volunteer);
+            await _user.VolunteerAccounts.AddAsync(voluneerAccount);
             SaveChangesToDB();
             return $"Account Creation Successful.";
         }
@@ -90,21 +95,26 @@ namespace GyanDyan.Services
                 //this is to convert string type to enum
                 Gender = (Gender)Enum.Parse(typeof(Gender), studentRegisterView.Gender),
                 MobileNumber = studentRegisterView.MobileNumber,
+                Email = studentRegisterView.Email,
+                //this is to convert string type to enum
+                EducationQualification = (EducationQualification)Enum.Parse(typeof(EducationQualification), studentRegisterView.EducationQualification)
+            };
+
+            var studnetAccount = new StudentAccount()
+            {
                 JoinedOn = DateTime.Now,
                 DateOfBirth = studentRegisterView.DateOfBirth,
-                Email = studentRegisterView.Email,
                 Street = studentRegisterView.Street,
                 State = studentRegisterView.State,
                 City = studentRegisterView.City,
                 Pin = studentRegisterView.Pin,
                 PassowrdSalt = passwordSalt,
                 PasswordHash = passwordHash,
-                IsVolunteer = false,
-                //this is to convert string type to enum
-                EducationQualification = (EducationQualification)Enum.Parse(typeof(EducationQualification), studentRegisterView.EducationQualification)
+                IsVolunteer = false
             };
 
             await _user.StudentProfiles.AddAsync(student);
+            await _user.StudentAccounts.AddAsync(studnetAccount);
             SaveChangesToDB();
             return $"Account Creation Successful.";
         }
@@ -112,13 +122,13 @@ namespace GyanDyan.Services
         //SIGNING USER
         public async Task<TokenViewModel> StudentLogin(LoginViewModel userLogin)
         {
-            var student = _user.StudentProfiles.FirstOrDefault(e => e.Email == userLogin.Email);
-
-            if(student == null)
+            var student = await _user.StudentProfiles.FirstOrDefaultAsync(e => e.Email == userLogin.Email);
+            var studentAccout = await GetStudentAccount(student.Id);
+            if (student == null)
             {
                 throw new LoginFailedException($"Student with {userLogin.Email} doesn't exists");
             }
-            var checkPassword = VerifyPassoword(userLogin.Password, student.PasswordHash, student.PassowrdSalt);
+            var checkPassword = VerifyPassoword(userLogin.Password, studentAccout.PasswordHash, studentAccout.PassowrdSalt);
             if (!checkPassword)
             {
                 throw new LoginFailedException($"Incorrect Password");
@@ -129,13 +139,14 @@ namespace GyanDyan.Services
         //SIGNING VOLUNTEER
         public async Task<TokenViewModel> VolunteerLogin(LoginViewModel userLogin)
         {
-            var volunteer =  _user.VolunteerProfiles.FirstOrDefault(e => e.Email == userLogin.Email);
+            var volunteer = await  _user.VolunteerProfiles.FirstOrDefaultAsync(e => e.Email == userLogin.Email);
+            var volunteerAccount = await GetVolunteerAccount(volunteer.Id);
 
             if (volunteer == null)
             {
                 throw new LoginFailedException($"Volunteer with {userLogin.Email} doesn't exists");
             }
-            var checkPassword = VerifyPassoword(userLogin.Password, volunteer.PasswordHash, volunteer.PassowrdSalt);
+            var checkPassword = VerifyPassoword(userLogin.Password, volunteerAccount.PasswordHash, volunteerAccount.PassowrdSalt);
             if (!checkPassword)
             {
                 throw new LoginFailedException($"Incorrect Password");
@@ -147,8 +158,9 @@ namespace GyanDyan.Services
         public async Task<string> UpdateStudentProfile(int studentId, ProfileUpdateViewModel studentProfile)
         {
             var student = await _user.StudentProfiles.FirstOrDefaultAsync(id=>id.Id == studentId);
+            var studentAccout = await GetStudentAccount(student.Id);
 
-            if(student == null)
+            if (student == null)
             {
                 return $"Student doesn't exist";
             }
@@ -158,10 +170,10 @@ namespace GyanDyan.Services
             student.LastName = studentProfile.LastName;
             student.MobileNumber = studentProfile.MobileNumber;
             student.Email = studentProfile.Email;
-            student.Street = studentProfile.Street;
-            student.State = studentProfile.State;
-            student.City = studentProfile.City;
-            student.Pin = studentProfile.Pin;
+            studentAccout.Street = studentProfile.Street;
+            studentAccout.State = studentProfile.State;
+            studentAccout.City = studentProfile.City;
+            studentAccout.Pin = studentProfile.Pin;
             student.EducationQualification = (EducationQualification)Enum.Parse(typeof(EducationQualification), studentProfile.EducationQualification);
             
 
@@ -174,6 +186,7 @@ namespace GyanDyan.Services
         public async Task<string> UpdateVolunteerProfile(int volunteerId, ProfileUpdateViewModel volunteerProfile)
         {
             var volunteer = await _user.VolunteerProfiles.FirstOrDefaultAsync(id => id.Id == volunteerId);
+            var volunteerAccount = await GetVolunteerAccount(volunteer.Id);
 
             if (volunteer == null)
             {
@@ -184,10 +197,10 @@ namespace GyanDyan.Services
             volunteer.LastName = volunteerProfile.LastName;
             volunteer.MobileNumber = volunteerProfile.MobileNumber;
             volunteer.Email = volunteerProfile.Email;
-            volunteer.Street = volunteerProfile.Street;
-            volunteer.State = volunteerProfile.State;
-            volunteer.City = volunteerProfile.City;
-            volunteer.Pin = volunteerProfile.Pin;
+            volunteerAccount.Street = volunteerProfile.Street;
+            volunteerAccount.State = volunteerProfile.State;
+            volunteerAccount.City = volunteerProfile.City;
+            volunteerAccount.Pin = volunteerProfile.Pin;
             volunteer.EducationQualification = (EducationQualification)Enum.Parse(typeof(EducationQualification), volunteerProfile.EducationQualification);
             
 
@@ -206,9 +219,20 @@ namespace GyanDyan.Services
         }
 
 
-            #region PRIVATE METHODS
-            //Returns true if the Volunteer is already registered in VolunteerProfile Table
-            private  bool VolunteerExists(string email)
+        #region PRIVATE METHODS
+        //Returns true if the Volunteer is already registered in VolunteerProfile Table
+
+        private async Task<StudentAccount> GetStudentAccount(int id)
+        {
+            return await _user.StudentAccounts.Where(sid => sid.StudentProfileId == id).FirstOrDefaultAsync();
+        }
+
+        private async Task<VolunteerAccount> GetVolunteerAccount(int id)
+        {
+            return await _user.VolunteerAccounts.Where(vid => vid.VolunteerProfileId == id).FirstOrDefaultAsync();
+        }
+
+        private  bool VolunteerExists(string email)
         {
             return _user.VolunteerProfiles.Any(e => e.Email == email);
         }

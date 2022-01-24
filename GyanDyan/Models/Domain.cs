@@ -13,11 +13,24 @@ namespace GyanDyan.Models
             public string FirstName { get; set; }
             public string LastName { get; set; }
             public Gender Gender { get; set; }
-
             public string MobileNumber { get; set; }
+            public string Email { get; set; }
+            public EducationQualification EducationQualification { get; set; }
+            public StudentAccount StudentAccount { get; set; }
+            public IList<StudentRequirement> StudentRequirements { get; set; }
+            public IList<OneToOne> OneToOne { get; set; }
+            public IList<Group> InGroupStudent { get; set; }
+            public List<VolunteerInbox> VolunteerInboxes { get; set; }
+            public List<StudentInbox> StudentInboxes { get; set; }
+        }
+
+        public class StudentAccount
+        {
+            public int Id { get; set; }
+            public int StudentProfileId { get; set; }
+            public StudentProfile StudentProfile { get; set; }
             public DateTime JoinedOn { get; set; }
             public DateTime DateOfBirth { get; set; }
-            public string Email { get; set; }
             public byte[] PasswordHash { get; set; }
             public byte[] PassowrdSalt { get; set; }
             public string Street { get; set; }
@@ -25,12 +38,6 @@ namespace GyanDyan.Models
             public string State { get; set; }
             public long Pin { get; set; }
             public bool IsVolunteer { get; set; }
-            public EducationQualification EducationQualification { get; set; }
-            public IList<StudentRequirement> StudentRequirements { get; set; }
-            public IList<OneToOne> OneToOne { get; set; }
-            public IList<Group> InGroupStudent { get; set; }
-            public List<VolunteerInbox> VolunteerInboxes { get; set; }
-            public List<StudentInbox> StudentInboxes { get; set; }
         }
 
         public class StudentRequirement
@@ -60,21 +67,29 @@ namespace GyanDyan.Models
             public string LastName { get; set; }
             public Gender Gender { get; set; }
             public string MobileNumber { get; set; }
-            public DateTime JoinedOn { get; set; }
-            public DateTime DateOfBirth { get; set; }
             public string Email { get; set; }
-            public byte[] PasswordHash { get; set; }
-            public byte[] PassowrdSalt { get; set; }
-            public string Street { get; set; }
-            public string City { get; set; }
-            public string State { get; set; }
-            public long Pin { get; set; }
+            public VolunteerAccount VolunteerAccount { get; set; }
             public EducationQualification EducationQualification { get; set; }
             public List<VolunteerRequirement> VolunteerRequirements { get; set; }
             public List<OneToOne> OneToOnes { get; set; }
             public List<Group> Groups { get; set; }
             public List<VolunteerInbox> VolunteerInboxes { get; set; }
             public List<StudentInbox> StudentInboxes { get; set; }
+        }
+
+        public class VolunteerAccount
+        {
+            public int Id { get; set; }
+            public int VolunteerProfileId { get; set; }
+            public VolunteerProfile VolunteerProfile { get; set; }
+            public DateTime JoinedOn { get; set; }
+            public DateTime DateOfBirth { get; set; }
+            public byte[] PasswordHash { get; set; }
+            public byte[] PassowrdSalt { get; set; }
+            public string Street { get; set; }
+            public string City { get; set; }
+            public string State { get; set; }
+            public long Pin { get; set; }
         }
 
         public class VolunteerRequirement
@@ -134,12 +149,11 @@ namespace GyanDyan.Models
         public class  VolunteerInbox
         {
             public int Id { get; set; }
-            public int VolunteerId { get; set; }
+            public int? VolunteerProfileId { get; set; }
             public VolunteerProfile VolunteerProfile { get; set; }
-            public int VolunteerRequirementId { get; set; }
+            public int? VolunteerRequirementId { get; set; }
             public VolunteerRequirement VolunteerRequirement { get; set; }
-
-            public int StudentId { get; set; }
+            public int? StudentProfileId { get; set; }
             public StudentProfile StudentProfile { get; set; }
         }
 
