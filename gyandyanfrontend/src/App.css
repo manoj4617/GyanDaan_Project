@@ -486,3 +486,58 @@ body{
 .modal-title1 {
   text-align: center;
 }
+
+/* Classes cards */
+.card {
+  border: none;
+  border-radius: 10px
+}
+
+.c-details span {
+  font-weight: 300;
+  font-size: 13px
+}
+.badge span {
+  background-color: #fffbec;
+  width: 60px;
+  height: 25px;
+  padding-bottom: 3px;
+  border-radius: 5px;
+  display: flex;
+  color: #fed85d;
+  justify-content: center;
+  align-items: center
+}
+
+.text1 {
+  font-size: 14px;
+  font-weight: 600
+}
+
+.text2 {
+  color: #a5aec0
+}
+.class-card{
+  background-color: #F1D615;
+}
+.list-item{
+  margin-top: 0;
+}
+
+.class-card{
+  -ms-overflow-style: none; 
+    scrollbar-width: none;
+}
+.class-card::-webkit-scrollbar {
+  display: none; 
+}
+
+.class-card{
+
+  max-height: 80%;
+  overflow-y: auto;
+}
+
+.main{
+  max-height: 80%;
+}

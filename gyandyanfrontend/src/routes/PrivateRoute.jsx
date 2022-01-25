@@ -9,7 +9,5 @@ export default function PrivateRoute({children}){
     if(authStatus.token){
         alive = isAlive(authStatus.token)
     }
-    console.log(children)
-    console.log(authStatus)
     return authStatus.isLoggedin && alive ? children  : <Navigate to="/login" />;
 }

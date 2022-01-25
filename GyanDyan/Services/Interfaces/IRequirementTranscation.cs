@@ -18,5 +18,7 @@ namespace GyanDyan.Services
         Task<List<StudentInbox>> GetInvitationsForStudent(int studentId);
         Task<string> AcceptInvitation(int inviteId);
         string RejectedInvitation(int inviteId);
+        Task<List<Group>> GetStudnetInGroupClass(int studentId);
+        Task<List<OneToOne>> GetStudentInOneToOneClass(int studentId);
     }
 }

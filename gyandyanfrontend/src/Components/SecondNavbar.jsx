@@ -20,7 +20,7 @@ export default function SecondNavbar(props) {
   }, [role]);
   return (
     <>
-      <nav className="navbar navbar-expand-lg navbar-light w-100 mx-auto">
+      <nav className="navbar navbar-expand-lg navbar-light">
         <p className="navbar-brand fs-4">Welcome {props.name}!!!</p>
         <button
           className="navbar-toggler"
@@ -33,46 +33,58 @@ export default function SecondNavbar(props) {
         >
           <span className="navbar-toggler-icon"></span>
         </button>
+
         <div className="collapse navbar-collapse" id="navbarSupportedContent">
-          <ul className="navbar-nav ms-auto align-items-center">
-            {Object.keys(props.invites).length !== 0 ? (
-              <>
-                <li className="nav-item">
-                  <a className="nav-link mx-2 " href="#!">
-                    <i
-                      className="fas fa-bell pe-2"
-                      data-toggle="modal"
-                      data-target="#exampleModalCenter"
-                    >
-                      <span className="badge badge-pill badge-info">
-                        {Object.keys(props.invites).length}
-                      </span>
-                    </i>
-                    Alerts
-                  </a>
-                </li>
-
-                {role === "Student" ? (
-                  <StudentModal invites={props.invites} />
-                ) : (
-                  <VolunteerModal invites={props.invites} />
-                )}
-              </>
-            ) : (
-              <li className="nav-item">
-                <a className="nav-link mx-2 " href="#!">
-                  <i className="fas fa-bell pe-2">
+          <ul className="navbar-nav  ms-auto">
+            <li className="nav-item m-auto">
+              {Object.keys(props.invites).length !== 0 ? (
+                <>
+                  <button
+                    type="button"
+                    className="btn btn-success"
+                    data-toggle="modal"
+                    data-target="#exampleModalCenter"
+                  >
+                    Invites{" "}
+                    <span className="badge badge-pill badge-info">
+                      {Object.keys(props.invites).length}
+                    </span>
+                  </button>
+                  {role === "Student" ? (
+                    <StudentModal invites={props.invites} />
+                  ) : (
+                    <VolunteerModal invites={props.invites} />
+                  )}
+                </>
+              ) : (
+                <button
+                  type="button"
+                  className="btn btn-success disabled"
+                  data-toggle="modal"
+                  data-target="#exampleModalCenter"
+                >
+                  Invites{" "}
+                  <span className="badge badge-pill badge-info">
                     {Object.keys(props.invites).length}
-                  </i>
-                  Alerts
-                </a>
-              </li>
-            )}
-
-            <li className="nav-item ms-3 ">
-              <a className="btn btn-black btn-rounded" href="/update-profile">
+                  </span>
+                </button>
+              )}
+            </li>
+            <li className="nav-item mr-5 fs-4 p-2">
+              <a className="nav-link" href="/update-profile">
                 Update Profile
               </a>
+            </li>
+            <li className="nav-item m-auto fs-4">
+              {role === "Student" ? (
+                <a className="nav-link" href="/classes/student">
+                Your Classes
+              </a>
+              ) : (
+                <a className="nav-link" href="/classes/volunteer">
+                Your Classes
+              </a>
+              )}
             </li>
           </ul>
         </div>

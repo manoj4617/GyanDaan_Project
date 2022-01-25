@@ -97,5 +97,19 @@ namespace GyanDyan.Controllers
         {
             return  _requirementTranscation.RejectedInvitation(inviteId);
         }
+
+        [Authorize(Policy = StaticProvider.StudentPolicy)]
+        [HttpGet("get-in-group/{studentId}")]
+        public async Task<IActionResult> GetStudentInGroup(int studentId)
+        {
+            return Ok(await _requirementTranscation.GetStudnetInGroupClass(studentId));
+        }
+
+        [Authorize(Policy = StaticProvider.StudentPolicy)]
+        [HttpGet("get-in-oneToOne/{studentId}")]
+        public async Task<IActionResult> GetStudentInOneToOne(int studentId)
+        {
+            return Ok(await _requirementTranscation.GetStudentInOneToOneClass(studentId));
+        }
     }
 }

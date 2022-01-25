@@ -10,7 +10,8 @@ import RequirementAdding from './RequirementAdding';
 import UpdateReqTable from './UpdateReqTable';
 import React from 'react'
 import UpdateProfile from './UpdateProfile';
-import LookUpStudent from './LookUpModal';
+import StudentClasses from './StudentClasses';
+import VolunteerClasses from './VolunteerClasses';
 
 export default function Container() {
 
@@ -50,6 +51,18 @@ export default function Container() {
                     <Route path='/update-profile' element={
                             <PrivateRoute>
                                 <UpdateProfile/>
+                            </PrivateRoute>
+                        }>    
+                    </Route>
+                    <Route path='/classes/student' element={
+                            <PrivateRoute>
+                                <StudentClasses/>
+                            </PrivateRoute>
+                        }>    
+                    </Route>
+                    <Route path='/classes/volunteer' element={
+                            <PrivateRoute>
+                                <VolunteerClasses/>
                             </PrivateRoute>
                         }>    
                     </Route>

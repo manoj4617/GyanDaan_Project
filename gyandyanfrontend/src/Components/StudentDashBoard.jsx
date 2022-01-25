@@ -15,7 +15,7 @@ export default function StudentDashBoard() {
   const [userData, setuserData] = useState([]);
   const [volunteerData, setvolunteerData] = useState([]);
   const [inboxData, setinboxData] = useState([]);
-  const [message, setmessage] = useState(null);
+  const [message, setmessage] = useState("nothing");
   const [showReqTable, setShowReqTable] = useState(false);
   const [showPendingTable, setshowPendingTable] = useState(false);
   const [invitation, setinvitation] = useState([]);
@@ -67,6 +67,7 @@ export default function StudentDashBoard() {
       .then((res) => {
         console.log(res);
         setmessage(res.data)
+        console.log(res.data);
         //window.location.reload();
       });
   };
@@ -134,32 +135,18 @@ export default function StudentDashBoard() {
       
 
       <div className="space" style={{ "paddingTop": "20px", "paddingBottom": "20px" }}></div>
-      {message !== null ? (
+      {message !== "nothing" ? (
         <> 
         {/* // <!-- Modal HTML --> */}
-          <div id="myModal" className="modal fade">
-            <div className="modal-dialog modal-confirm">
-              <div className="modal-content">
-                <div className="modal-header">
-                  {message === "Your Request has been sent" ? (
-                    <div className="icon-box">
-                      <i className="material-icons">&#10003;</i>
-                    </div>
-                  ) : (
-                    <div className="icon-box">
-                    <i className="material-icons">&#xE5CD;</i>
-                    </div>
-                  )}		
-                </div>
-                <div className="modal-body">
-                  <p className="text-center">{message}</p>
-                </div>
-                <div className="modal-footer">
-                  <button onClick={()=>setmessage(null)} className="btn btn-success btn-block" data-dismiss="modal">OK</button>
-                </div>
-              </div>
-            </div>
-          </div>   
+        <div
+            className="alert alert-success alert-dismissible fade show"
+
+            role="alert"
+          >
+            <button type="button" className="close" data-dismiss="alert">&times;</button>
+            {message}
+          </div>
+
         </>  
       ) : null}
       <div className="container">

@@ -222,6 +222,32 @@ namespace GyanDyan.Services
             return "Rejected";
         }
 
+        public async Task<List<Group>> GetStudnetInGroupClass(int studentId)
+        {
+            return await _context.GroupsClass
+                .Where(id => id.StudentProfileId == studentId)
+                .Include(i => i.VolunteerRequirement)
+                .ThenInclude(i => i.VolunteerProfile)
+                .Include(i => i.StudentRequirement)
+                .ToListAsync();
+        }
+
+        public async Task<List<OneToOne>> GetStudentInOneToOneClass(int studentId)
+        {
+            var student =  await _context.OneToOneClass
+                .Where(id => id.StudentProfileId == studentId)
+                .Include(i => i.VolunteerRequirement)
+                .Include(id => id.StudentRequirement)
+                .ToListAsync();
+
+            var stu = await _context.OneToOneClass
+                .Select(i => i.StudentRequirement)
+                .Where(id => id.StudentProfileId == studentId)
+                .ToListAsync();
+
+            return student;
+        }
+
         #region PRIVATE METHODS
         private void RemoveNotification(int volunteerID,int requirementId, int studentId)
         {
