@@ -2,9 +2,9 @@ import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import { decode } from "../utils/jwt";
 import { httpClient } from "../http/httpclient";
-import accepted from '../Components/images/accepted1.png';
-import pending from '../Components/images/pending2.png';
-import new_request from '../Components/images/new_request2.png';
+import accepted from '../Components/images/accepted1_1.png';
+import pending from '../Components/images/pending2_1.png';
+import new_request from '../Components/images/new_request2_1.png';
 import ReqTable from './ReqTable'
 import PendingReq from "./PendingReq";
 import SecondNavbar from "./SecondNavbar";
