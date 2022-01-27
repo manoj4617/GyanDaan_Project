@@ -4,6 +4,8 @@ using GyanDyan.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System;
+using System.IO;
 using System.Threading.Tasks;
 using static GyanDyan.Models.Domain;
 

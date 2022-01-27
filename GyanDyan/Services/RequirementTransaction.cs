@@ -204,6 +204,7 @@ namespace GyanDyan.Services
             {
                 var addIn1to1 = new OneToOne()
                 {
+                    StudentProfileId = getInvite.StudentRequirement.StudentProfileId,
                     StudentRequirementId = getInvite.StudentRequirement.Id,
                     VolunteerProfileId = getInvite.VolunteerRequirement.VolunteerProfileId,
                 };
@@ -227,7 +228,7 @@ namespace GyanDyan.Services
             return await _context.GroupsClass
                 .Where(id => id.StudentProfileId == studentId)
                 .Include(i => i.VolunteerRequirement)
-                .ThenInclude(i => i.VolunteerProfile)
+                .Include(i => i.VolunteerProfile)
                 .Include(i => i.StudentRequirement)
                 .ToListAsync();
         }
@@ -237,14 +238,9 @@ namespace GyanDyan.Services
             var student =  await _context.OneToOneClass
                 .Where(id => id.StudentProfileId == studentId)
                 .Include(i => i.VolunteerRequirement)
+                .ThenInclude(i => i.VolunteerProfile)
                 .Include(id => id.StudentRequirement)
                 .ToListAsync();
-
-            var stu = await _context.OneToOneClass
-                .Select(i => i.StudentRequirement)
-                .Where(id => id.StudentProfileId == studentId)
-                .ToListAsync();
-
             return student;
         }
 

@@ -188,7 +188,7 @@ namespace GyanDyan.Services
 
         public async Task<string> UpdateVolunteerRequirement(int volunteerReqId, VolunteerRequirementViewModel requirementViewModel)
         {
-            var volunteerReq = await _studentContext.StudentRequirements.FirstOrDefaultAsync(id=>id.Id == volunteerReqId);
+            var volunteerReq = await _studentContext.VolunteerRequirements.FirstOrDefaultAsync(id=>id.Id == volunteerReqId);
 
             if (volunteerReq == null)
             {

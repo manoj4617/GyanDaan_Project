@@ -3,12 +3,14 @@ using GyanDyan.Exceptions;
 using GyanDyan.Services.Interfaces;
 using GyanDyan.Utils;
 using GyanDyan.ViewModels;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
+using System.IO;
 using System.Linq;
 using System.Security.Claims;
 using System.Security.Cryptography;
@@ -118,6 +120,19 @@ namespace GyanDyan.Services
                 PasswordHash = passwordHash,
                 IsVolunteer = false
             };
+
+            //try
+            //{
+            //    string path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/ProfileImages", studentRegisterView.FileName);
+            //    using (Stream stream = new FileStream(path, FileMode.Create))
+            //    {
+            //        studentRegisterView.FormFile.CopyTo(stream);
+            //    }
+            //}
+            //catch (Exception ex)
+            //{
+            //    return null;
+            //}
 
             await _user.StudentAccounts.AddAsync(studnetAccount);
             SaveChangesToDB();

@@ -187,7 +187,16 @@ body{
         padding: 1rem
     }
 }
-
+@media (min-width: 576px) and (max-width: 767.98px) { 
+  .forms{
+    width: 90%;
+  }
+ }
+ @media (max-width: 576px){ 
+  .forms{
+    width: 90%;
+  }
+ }
 .padding {
     padding: 5rem
 }
@@ -533,8 +542,8 @@ body{
 }
 
 .class-card{
-
-  max-height: 80%;
+  margin-top: 20px;
+  max-height: 500px;
   overflow-y: auto;
 }
 

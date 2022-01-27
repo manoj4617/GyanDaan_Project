@@ -46,6 +46,8 @@ export const requirementValidations = Yup.object().shape({
     timeOfStart :  Yup.date().required('Required'),
 });
 export const validationSchema = Yup.object().shape({
+    fileName :Yup.string(),
+    formFile: Yup.mixed(),
     firstName: Yup.string()
         .required('Required'),
     lastName: Yup.string()

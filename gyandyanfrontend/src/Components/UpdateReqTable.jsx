@@ -47,7 +47,7 @@ export default function UpdateReqTable(props) {
     onSubmit: (values) => {
       console.log(values);
       if(userInfo.Roles === "Student"){
-        httpClient.put(`requirement/update-student-requirement/${userInfo.Id}`, values).then((res) => {
+        httpClient.put(`requirement/update-student-requirement/${data.id}`, values).then((res) => {
           console.log(res)
           seterrorMessage(res.data);
 
@@ -61,7 +61,7 @@ export default function UpdateReqTable(props) {
       }
 
       if(userInfo.Roles === "Volunteer"){
-        httpClient.put(`requirement/update-volunteer-requirement/${userInfo.Id}`, values).then((res) => {
+        httpClient.put(`requirement/update-volunteer-requirement/${data.id}`, values).then((res) => {
           console.log(res)
           seterrorMessage(res.data);
 
