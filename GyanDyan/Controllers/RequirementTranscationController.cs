@@ -51,9 +51,65 @@ namespace GyanDyan.Controllers
 
         [Authorize(Policy = StaticProvider.VolunteerPolicy)]
         [HttpGet("accept-student-request/{studentRequirementId}/{volunteerId}")]
-        public async Task<string> AcceptStudentRequirement(int studentRequirementId, int volunteerId)
+        public async Task<IEnumerable<VolunteerRequirement>> AcceptStudentRequirement(int studentRequirementId, int volunteerId)
         {
             return await _requirementTranscation.AcceptStudentRequirement(studentRequirementId, volunteerId);
+        }
+
+        [Authorize(Policy = StaticProvider.VolunteerPolicy)]
+        [HttpGet("send-inviteTo-student/{studentReqId}/{volunteerReqId}")]
+        public async Task<string> InviteThisStudent([FromRoute] int studentReqId, [FromRoute] int volunteerReqId)
+        {
+            return await _requirementTranscation.InviteThisStudentReq(studentReqId, volunteerReqId);
+        }
+
+        [Authorize(Policy = StaticProvider.StudentPolicy)]
+        [HttpGet("get-invitesfor-student/{studentId}")]
+        public async Task<List<StudentInbox>> GetStudentInboxesAsync([FromRoute]int studentId)
+        {
+            return await _requirementTranscation.GetInvitationsForStudent(studentId);
+        }
+
+        [Authorize(Policy = StaticProvider.StudentPolicy)]
+        [HttpGet("get-pending/{studentId}")]
+        public async Task<List<VolunteerInbox>> GetVolunteerReqForStudent(int studentId)
+        {
+            return await _requirementTranscation.GetReqListForStudents(studentId);
+        }
+
+        [Authorize(Policy = StaticProvider.VolunteerPolicy)]
+        [HttpGet("get-pending-for-volunteer/{volunteerId}")]
+        public async Task<List<StudentInbox>> GetStudentReqForVolunteer(int volunteerId)
+        {
+            return await _requirementTranscation.GetReqListForVolunteer(volunteerId);
+        }
+
+        [Authorize(Policy = StaticProvider.StudentPolicy)]
+        [HttpGet("accept-invite/{inviteId}")]
+        public async Task<string> AcceptInvitation([FromRoute]int inviteId)
+        {
+            return await _requirementTranscation.AcceptInvitation(inviteId);
+        }
+
+        [Authorize(Policy = StaticProvider.StudentPolicy)]
+        [HttpGet("reject-invite/{inviteId}")]
+        public async Task<string> RejectInvitation([FromRoute] int inviteId)
+        {
+            return  _requirementTranscation.RejectedInvitation(inviteId);
+        }
+
+        [Authorize(Policy = StaticProvider.StudentPolicy)]
+        [HttpGet("get-in-group/{studentId}")]
+        public async Task<IActionResult> GetStudentInGroup(int studentId)
+        {
+            return Ok(await _requirementTranscation.GetStudnetInGroupClass(studentId));
+        }
+
+        [Authorize(Policy = StaticProvider.StudentPolicy)]
+        [HttpGet("get-in-oneToOne/{studentId}")]
+        public async Task<IActionResult> GetStudentInOneToOne(int studentId)
+        {
+            return Ok(await _requirementTranscation.GetStudentInOneToOneClass(studentId));
         }
     }
 }

@@ -15,11 +15,32 @@
     <Compile Remove="Migrations\20211231082407_madeFewchanges.Designer.cs" />
     <Compile Remove="Migrations\20220101075917_AddedNewTable.cs" />
     <Compile Remove="Migrations\20220101075917_AddedNewTable.Designer.cs" />
+    <Compile Remove="Migrations\20220115145541_updatedStudentInboxTableAgain.cs" />
+    <Compile Remove="Migrations\20220115145541_updatedStudentInboxTableAgain.Designer.cs" />
+    <Compile Remove="Migrations\20220115145747_updatedStudentInboxTableAgain.cs" />
+    <Compile Remove="Migrations\20220115145747_updatedStudentInboxTableAgain.Designer.cs" />
+    <Compile Remove="Migrations\20220124032721_MadeMAjorChanges.cs" />
+    <Compile Remove="Migrations\20220124032721_MadeMAjorChanges.Designer.cs" />
+    <Compile Remove="Migrations\20220124033010_MadeMAjorChanges.cs" />
+    <Compile Remove="Migrations\20220124033010_MadeMAjorChanges.Designer.cs" />
+    <Compile Remove="Migrations\20220124040202_MadeMAjorChanges.cs" />
+    <Compile Remove="Migrations\20220124040202_MadeMAjorChanges.Designer.cs" />
+    <Compile Remove="Migrations\20220124044333_MadeMAjorChanges.cs" />
+    <Compile Remove="Migrations\20220124044333_MadeMAjorChanges.Designer.cs" />
+    <Compile Remove="Migrations\20220124044412_MadeMAjorChanges.cs" />
+    <Compile Remove="Migrations\20220124044412_MadeMAjorChanges.Designer.cs" />
+    <Compile Remove="Migrations\20220124044504_MadeMAjorChanges.cs" />
+    <Compile Remove="Migrations\20220124044504_MadeMAjorChanges.Designer.cs" />
+    <Compile Remove="Migrations\20220124044640_MadeMAjorChanges.cs" />
+    <Compile Remove="Migrations\20220124044640_MadeMAjorChanges.Designer.cs" />
+    <Compile Remove="Migrations\20220124044714_MadeMAjorChanges.cs" />
+    <Compile Remove="Migrations\20220124044714_MadeMAjorChanges.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="3.1.22" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Abstractions" Version="2.2.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="3.1.22" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.22" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="3.1.22">
       <PrivateAssets>all</PrivateAssets>
@@ -31,6 +52,10 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="wwwroot\ProfileImages\" />
   </ItemGroup>
 
 

@@ -1,8 +1,13 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { Navigate, Outlet } from 'react-router';
+import { Navigate } from 'react-router';
+import {isAlive } from '../utils/jwt';
 
-export default function PrivateRoute(){
+export default function PrivateRoute({children}){
     const authStatus = useSelector((state) => state.auth);
-    return authStatus ? <Outlet /> : <Navigate to="/login" />;
+    var alive = false;
+    if(authStatus.token){
+        alive = isAlive(authStatus.token)
+    }
+    return authStatus.isLoggedin && alive ? children  : <Navigate to="/login" />;
 }

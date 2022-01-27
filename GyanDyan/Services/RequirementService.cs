@@ -23,20 +23,25 @@ namespace GyanDyan.Services
             _configuration = configuration;
         }
 
-        public async Task AddNewStudentRequirement(StudentRequirementViewModel requirementViewModel)
+        public async Task<string> AddNewStudentRequirement(StudentRequirementViewModel requirementViewModel)
         {
             //This query gets all the student requirement for the particular studnet 
             //which have same timings so that the requirements timing dont clash
-            await CheckIfStudentDaysClash(requirementViewModel);
-          
+            var clash = await CheckIfStudentDaysClash(requirementViewModel);
+            if (clash != null)
+            {
+                return $"The selected days clash with the schedule of {clash.Subject} subject of topic {clash.Topic}";
+            }
+
             var newStudentRequirement = new StudentRequirement()
             {
-                StudentProfileId = requirementViewModel.StudentProfileId,
-                PostedOnDate = DateTime.Now,
+                StudentProfileId = requirementViewModel.ProfileId,
+                PostedOnDate = GetDateTime().ToString("yyyy - MM - dd HH: mm:ss"),
                 StartDay = (Days)Enum.Parse(typeof(Days),requirementViewModel.StartDay),
                 EndDay = (Days)Enum.Parse(typeof(Days), requirementViewModel.EndDay),
                 StartTime = requirementViewModel.StartTime,
                 EndTime = requirementViewModel.EndTime,
+                Subject = requirementViewModel.Subject,
                 Topic = requirementViewModel.Topic,
                 TypeOfClass = (TypeOfClass)Enum.Parse(typeof(TypeOfClass),requirementViewModel.TypeOfClass)
             };
@@ -44,40 +49,58 @@ namespace GyanDyan.Services
             await _studentContext.StudentRequirements.AddAsync(newStudentRequirement);
 
             SaveChangesToDB();
+
+            return $"Your Requirement was added successfully!!!";
         }
 
-        public async Task AddNewVolunteerRequirement(VolunteerRequirementViewModel requirementViewModel)
+        public async Task<string> AddNewVolunteerRequirement(VolunteerRequirementViewModel requirementViewModel)
         {
-            await CheckIfVolunteerDaysClash(requirementViewModel);
-
+            var clash = await CheckIfVolunteerDaysClash(requirementViewModel);
+            if(clash != null)
+            {
+                return $"The selected days clash with the schedule of {clash.Subject} subject of topic {clash.Topic}";
+            }
             var newVolunteerRequirement = new VolunteerRequirement()
             {
-                VolunteerProfileId = requirementViewModel.VolunteerProfileId,
-                PostedOnDate = DateTime.Now,
+                VolunteerProfileId = requirementViewModel.ProfileId,
+                PostedOnDate = GetDateTime().ToString("yyyy - MM - dd HH: mm:ss"),
                 StartDay = (Days)Enum.Parse(typeof(Days), requirementViewModel.StartDay),
                 EndDay = (Days)Enum.Parse(typeof(Days), requirementViewModel.EndDay),
                 StartTime = requirementViewModel.StartTime,
                 EndTime = requirementViewModel.EndTime,
-                AreaOfSpecialization = requirementViewModel.AreaOfspecialization,
+                Subject = requirementViewModel.Subject,
+                Topic = requirementViewModel.Topic,
                 TypeOfClass = (TypeOfClass)Enum.Parse(typeof(TypeOfClass), requirementViewModel.TypeOfClass)
             };
 
             await _studentContext.VolunteerRequirements.AddAsync(newVolunteerRequirement);
 
             SaveChangesToDB();
+            return $"Your Requirement was added successfully!!!";
         }
 
         //Getting Student Requirements
         public async Task<IEnumerable<StudentRequirement>> GetStudentRequirements(int studentId)
         {
-            var requirements = await _studentContext.StudentRequirements.Where(id => id.StudentProfileId == studentId).ToListAsync();
+            var requirements = await _studentContext.StudentRequirements.Where(id => id.StudentProfileId == studentId)
+                .Include(i => i.OneToOne)
+                .ThenInclude(i => i.VolunteerProfile)
+                .Include(i => i.Group)
+                .ThenInclude(i => i.VolunteerRequirement)
+                .ThenInclude(i => i.VolunteerProfile)
+                .ToListAsync();
 
             return requirements;
         }
         //Getting Volunteer Requirements
         public async Task<IEnumerable<VolunteerRequirement>> GetVolunteerRequirements(int volunteerId)
         {
-            var requirements = await _studentContext.VolunteerRequirements.Where(id => id.VolunteerProfileId == volunteerId).ToListAsync();
+            var requirements = await _studentContext.VolunteerRequirements.Where(id => id.VolunteerProfileId == volunteerId)
+                .Include(i => i.OneToOnes)
+                .ThenInclude(i => i.StudentProfile)
+                .Include(i => i.InGroupVolunteer)
+                .ThenInclude(i => i.StudentProfile)
+                .ToListAsync();
 
             return requirements;
         }
@@ -87,17 +110,19 @@ namespace GyanDyan.Services
         public async Task<IEnumerable<VolunteerRequirement>> ShowAllVolunteerDetailsForStudent(int studentId)
         {
             //Query to get all the oneToOne classes in which the student is enrolled
-            var checkOneToOne =  _studentContext.OneToOneClass.Where(id => id.StudentId == studentId)
+            var checkOneToOne =  _studentContext.OneToOneClass.Where(id => id.StudentProfileId == studentId)
                 .Select(vid =>  vid.VolunteerRequirement)
                 .ToList();
 
             //Query to get all the group classes in which the student is enrolled
-            var isInGroup = _studentContext.GroupsClass.Where(id => id.StudentId == studentId)
+            var isInGroup = _studentContext.GroupsClass.Where(id => id.StudentProfileId == studentId)
                .Select(vid => vid.VolunteerRequirement)
                .ToList();
 
             //query to get all the requirements
-            var r = await _studentContext.VolunteerRequirements.ToListAsync();
+            var r = await _studentContext.VolunteerRequirements
+                .Include(i => i.VolunteerProfile)
+                .ToListAsync();
 
 
             if (isInGroup != null || checkOneToOne != null)
@@ -116,38 +141,86 @@ namespace GyanDyan.Services
         public async Task<IEnumerable<StudentRequirement>> ShowAllStudentRequirment(int volunteerId)
         {
             //Query to get all the oneToOne classes in which the volunteer has accepted
-            var checkOneToOne = _studentContext.OneToOneClass.Where(id => id.VolunteerId == volunteerId)
+            var checkOneToOne = _studentContext.OneToOneClass.Where(id => id.VolunteerProfileId == volunteerId)
                 .Select(vid => vid.StudentRequirement)
                 .ToList();
 
+            var checkGroup = _studentContext.GroupsClass
+                .Where(id => id.VolunteerProfileId == volunteerId)
+                .Select(sid => sid.StudentRequirement)
+                .ToList();
             //Gets all the student requirements
-            var r = await _studentContext.StudentRequirements.ToListAsync();
+            var r = await _studentContext.StudentRequirements.Include(i => i.StudentProfile).ToListAsync();
 
 
             if (checkOneToOne != null)
             {
                 //excludes the student requirements those which the volunteer has already accepted
                 IEnumerable<StudentRequirement> requirement = r.Except(checkOneToOne);
+                requirement = requirement.Except(checkGroup);
                 return requirement;
             }
             return null;
 
         }
 
-       
+        public async Task<string> UpdateStudentRequirement(int studentReqId, StudentRequirementViewModel requirementViewModel)
+        {
+            var studentReq = await _studentContext.StudentRequirements.FirstOrDefaultAsync(id => id.Id == studentReqId);
+
+            if(studentReq == null)
+            {
+                return "Requirement doesn't exist";
+            }
+
+            studentReq.StartDay = (Days)Enum.Parse(typeof(Days), requirementViewModel.StartDay);
+            studentReq.EndDay = (Days)Enum.Parse(typeof(Days), requirementViewModel.EndDay);
+            studentReq.StartTime = requirementViewModel.StartTime;
+            studentReq.EndTime = requirementViewModel.EndTime;
+            studentReq.Subject = requirementViewModel.Subject;
+            studentReq.Topic = requirementViewModel.Topic;
+            studentReq.TypeOfClass = (TypeOfClass)Enum.Parse(typeof(TypeOfClass), requirementViewModel.TypeOfClass);
+            
+            SaveChangesToDB();
+
+            return "Requirement Updated";
+        }
+
+        public async Task<string> UpdateVolunteerRequirement(int volunteerReqId, VolunteerRequirementViewModel requirementViewModel)
+        {
+            var volunteerReq = await _studentContext.VolunteerRequirements.FirstOrDefaultAsync(id=>id.Id == volunteerReqId);
+
+            if (volunteerReq == null)
+            {
+                return "Requirement doesn't exist";
+            }
+
+            volunteerReq.StartDay = (Days)Enum.Parse(typeof(Days), requirementViewModel.StartDay);
+            volunteerReq.EndDay = (Days)Enum.Parse(typeof(Days), requirementViewModel.EndDay);
+            volunteerReq.StartTime = requirementViewModel.StartTime;
+            volunteerReq.EndTime = requirementViewModel.EndTime;
+            volunteerReq.Subject = requirementViewModel.Subject;
+            volunteerReq.Topic = requirementViewModel.Topic;
+
+            SaveChangesToDB();
+
+            return "Requirement Updated";
+        }
+
+
         #region PRIVATE HELPER METHODS
 
         //This query gets all the student requirement for the particular studnet 
         //which have same timings so that the requirements timing dont clash
         //throws an exception if the days clash
-        private async Task CheckIfStudentDaysClash(StudentRequirementViewModel studentRequirement)
+        private async Task<DaysTimeClashViewModel> CheckIfStudentDaysClash(StudentRequirementViewModel studentRequirement)
         {
             //this query gets all the existing requirements which have similar timings to the new one
             var getRequirementWithSimilarTimings = await _studentContext.StudentRequirements
-                 .Where(student => student.StudentProfileId == studentRequirement.StudentProfileId &&
+                 .Where(student => student.StudentProfileId == studentRequirement.ProfileId &&
                      student.StartTime == studentRequirement.StartTime &&
                      student.EndTime == studentRequirement.EndTime)
-                 .Select(id => new { id.Id , id.StartDay, id.EndDay, id.Topic})
+                 .Select(id => new DaysTimeClashViewModel{ Id = id.Id , StartDay = id.StartDay, EndDay = id.EndDay, Topic = id.Topic, Subject = id.Subject})
                  .ToListAsync();
 
             var newStartDay = (int)Enum.Parse(typeof(Days), studentRequirement.StartDay);
@@ -162,18 +235,20 @@ namespace GyanDyan.Services
                     (existingStartDay <= newEndDay && newEndDay <= existingEndDay))
                 {
                     //if the days are clashing throws an exception
+                    return s;
                     throw new DaysClashingException($"The selected days clash with the schedule for {s.Topic} class");
                 }
             }
+            return null;
         }
 
-        private async Task CheckIfVolunteerDaysClash(VolunteerRequirementViewModel requirementViewModel)
+        private async Task<DaysTimeClashViewModel> CheckIfVolunteerDaysClash(VolunteerRequirementViewModel requirementViewModel)
         {
             var getRequirementWithSimilarTimings = await _studentContext.VolunteerRequirements
-                .Where(v => v.VolunteerProfileId == requirementViewModel.VolunteerProfileId &&
+                .Where(v => v.VolunteerProfileId == requirementViewModel.ProfileId &&
                     v.StartTime == requirementViewModel.StartTime &&
                     v.EndTime == requirementViewModel.EndTime)
-                .Select(v => new { v.Id, v.StartDay, v.EndDay, v.AreaOfSpecialization })
+                .Select(id => new DaysTimeClashViewModel { Id = id.Id, StartDay = id.StartDay, EndDay = id.EndDay, Topic = id.Topic, Subject = id.Subject })
                 .ToListAsync();
 
             var newStartDay = (int)Enum.Parse(typeof(Days), requirementViewModel.StartDay);
@@ -187,11 +262,22 @@ namespace GyanDyan.Services
                     (existingStartDay <= newEndDay && newEndDay <= existingEndDay))
                 {
                     //if the days are clashing throws an exception
-                    throw new DaysClashingException($"The selected days clash with the schedule for {s.AreaOfSpecialization} class");
+                    return s;
+                    throw new DaysClashingException($"The selected days clash with the schedule for  class");
                 }
             }
+            return null;
         }
 
+        private DateTime GetDateTime()
+        {
+            DateTime serverTime = DateTime.Now; 
+            DateTime utcTime = serverTime.ToUniversalTime(); 
+
+            TimeZoneInfo tzi = TimeZoneInfo.FindSystemTimeZoneById("India Standard Time");
+            DateTime localTime = TimeZoneInfo.ConvertTimeFromUtc(utcTime, tzi);
+            return localTime;
+        }
         private void SaveChangesToDB()
         {
             _studentContext.SaveChanges();

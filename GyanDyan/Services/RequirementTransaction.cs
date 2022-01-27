@@ -22,7 +22,7 @@ namespace GyanDyan.Services
         {
             var checkIfNotificationExists = await _context.VolunteerInboxes
                 .Where(id => id.VolunteerRequirementId == volunteerRequirementId
-                && id.StudentId == studentId).FirstOrDefaultAsync();
+                && id.StudentProfileId == studentId).FirstOrDefaultAsync();
 
             if (checkIfNotificationExists != null)
             {
@@ -32,8 +32,8 @@ namespace GyanDyan.Services
             var addtoInbox = new VolunteerInbox()
             {
                 VolunteerRequirementId = volunteerRequirementId,
-                StudentId = studentId,
-                VolunteerId = volunteerId
+                StudentProfileId = studentId,
+                VolunteerProfileId = volunteerId
             };
 
             await _context.VolunteerInboxes.AddAsync(addtoInbox);
@@ -45,10 +45,10 @@ namespace GyanDyan.Services
         public async Task<string> AcceptedByVolunteer(int volunteerID, int requirementId, int studentId)
         {
             var getNotification = await _context.VolunteerInboxes
-               .Where(id => id.VolunteerId == volunteerID
+               .Where(id => id.VolunteerProfileId == volunteerID
                    && id.VolunteerRequirementId == requirementId
-                   && id.StudentId == studentId)
-               .Select(v => new { v.VolunteerRequirement, v.StudentId, v.VolunteerId })
+                   && id.StudentProfileId == studentId)
+               .Select(v => new { v.VolunteerRequirement, v.StudentProfileId, v.VolunteerProfileId })
                .ToListAsync();
 
             foreach (var i in getNotification)
@@ -57,7 +57,7 @@ namespace GyanDyan.Services
                 {
                     var addInOneToOne = new OneToOne()
                     {
-                        StudentId = i.StudentId,
+                        StudentProfileId = i.StudentProfileId,
                         VolunteerRequirementId = i.VolunteerRequirement.Id
                     };
                     await _context.OneToOneClass.AddAsync(addInOneToOne);
@@ -68,7 +68,8 @@ namespace GyanDyan.Services
                     var addInGroup = new Group()
                     {
                         VolunteerRequirementId = i.VolunteerRequirement.Id,
-                        StudentId = i.StudentId
+                        StudentProfileId = i.StudentProfileId,
+                        VolunteerProfileId = i.VolunteerProfileId
                     };
                     await _context.GroupsClass.AddAsync(addInGroup);
                     RemoveNotification(volunteerID, requirementId, studentId);
@@ -87,17 +88,18 @@ namespace GyanDyan.Services
         public async Task<List<SendNotificationDetials>> GetAllNotificationsForVolunteer(int volunteerId)
         {
             return await _context.VolunteerInboxes
-                 .Where(id => id.VolunteerId == volunteerId)
+                 .Where(id => id.VolunteerProfileId == volunteerId)
+                 .Include(i => i.StudentProfile)
                  .Select(v => new SendNotificationDetials()
                  {
-                     StudentProfile = _context.StudentProfiles.Where(id => id.Id == v.StudentId)
+                     StudentProfile = _context.StudentProfiles.Where(id => id.Id == v.StudentProfileId)
                          .FirstOrDefault(),
                      Volunteer = v.VolunteerRequirement,
                  })
                  .ToListAsync();
         }
 
-        public async Task<string> AcceptStudentRequirement(int studentRequirementId, int volunteerId)
+        public async Task<IEnumerable<VolunteerRequirement>> AcceptStudentRequirement(int studentRequirementId, int volunteerId)
         {
             var getStudentTypeOfClass = _context.StudentRequirements
                 .Where(rid => rid.Id == studentRequirementId)
@@ -105,63 +107,158 @@ namespace GyanDyan.Services
 
             var volunteerRequirement = await _context.VolunteerRequirements
                 .Where(id => id.VolunteerProfileId == volunteerId
-                    && id.AreaOfSpecialization == getStudentTypeOfClass.Topic)
-                    .FirstOrDefaultAsync();
-            
-            //If the volunteer trying to admit the student does not have any class with the same topic as the student requirement
-            //and same type of class the she/he cannot admit the studnet to the class
-            if(volunteerRequirement == null)
+                        && id.Subject == getStudentTypeOfClass.Subject 
+                        && id.TypeOfClass == getStudentTypeOfClass.TypeOfClass
+                        || id.Topic == getStudentTypeOfClass.Topic)
+                    .ToListAsync();
+
+            var studentInbox = await _context.StudentInboxes
+                .Where(id => id.StudentRequirementId == studentRequirementId && id.VolunteerId == volunteerId)
+                .Select(id => id.VolunteerRequirement)
+                .ToListAsync();
+            IEnumerable<VolunteerRequirement> newvolunteerRequirement = volunteerRequirement.Except(studentInbox);
+            if (volunteerRequirement == null)
             {
-                return $"You cannot accept this student in any of your classes since you don't have any classes" +
-                    $" for {getStudentTypeOfClass.Topic}";
+                return null;
             }
 
-            if(volunteerRequirement.TypeOfClass != getStudentTypeOfClass.TypeOfClass)
-            {
-                return $"Your existing type of class doesn't match with the student's type of class";
-            }
+            return newvolunteerRequirement;
+        }
 
-            if (getStudentTypeOfClass.TypeOfClass == TypeOfClass.OneToOne)
+        public async Task<string> InviteThisStudentReq(int studentReqId, int volunteerReqId)
+        {
+            var getVolunteer = await _context.VolunteerRequirements
+                .Where(i => i.Id == volunteerReqId)
+                .FirstOrDefaultAsync();
+
+            var getStudent = await _context.StudentRequirements
+                .Where(i => i.Id == studentReqId)
+                .FirstOrDefaultAsync();
+
+            var inviteStudnet = new StudentInbox()
             {
-                var addNewStudent = new OneToOne()
+                StudentRequirementId = studentReqId,
+                StudentId = getStudent.StudentProfileId,
+                VolunteerId = getVolunteer.VolunteerProfileId,
+                VolunteerRequirementId = volunteerReqId
+            };
+
+            await _context.StudentInboxes.AddAsync(inviteStudnet);
+            SaveChangesToDB();
+
+            return $"Your invitation was sent successfully!!!";
+        }
+        public async Task<List<VolunteerInbox>> GetReqListForStudents(int studentId)
+        {
+            return await _context.VolunteerInboxes
+                .Where(id => id.StudentProfileId == studentId)
+                .Include(i => i.VolunteerRequirement)
+                .ToListAsync();
+        }
+
+        public async Task<List<StudentInbox>> GetReqListForVolunteer(int volunteerId)
+        {
+            return await _context.StudentInboxes
+                .Where(id => id.VolunteerId == volunteerId)
+                .Include(i => i.StudentRequirement)
+                .ToListAsync();
+        }
+
+        public async Task<List<StudentInbox>> GetInvitationsForStudent(int studentId)
+        {
+            return await _context.StudentInboxes
+                .Include(i => i.StudentRequirement)
+                .Include(i => i.VolunteerRequirement)
+                .ThenInclude(i => i.VolunteerProfile)
+                .Where(id => id.StudentId == studentId)
+                .ToListAsync();
+        }
+
+        public async Task<string> AcceptInvitation(int inviteId)
+        {
+            var getInvite = await _context.StudentInboxes
+                .Include(i => i.StudentRequirement)
+                .Include(i => i.VolunteerRequirement)
+                .ThenInclude(i => i.VolunteerProfile)
+                .Where(id => id.Id == inviteId)
+                .FirstOrDefaultAsync();
+
+            var getStudentReq = _context.StudentRequirements
+               .Where(rid => rid.Id == getInvite.StudentRequirementId)
+               .FirstOrDefault();
+
+            if (getInvite.StudentRequirement.TypeOfClass == TypeOfClass.Group)
+            {
+                var addInGroupClass = new Group()
                 {
-                    StudentRequirementId = studentRequirementId,
-                    VolunteerId = volunteerId
+                    VolunteerRequirementId = getInvite.VolunteerRequirementId,
+                    StudentRequirementId = getInvite.StudentRequirementId,
+                    StudentProfileId = getInvite.StudentId,
+                    VolunteerProfileId = getInvite.VolunteerRequirement.VolunteerProfileId
                 };
-                getStudentTypeOfClass.AcceptedByVolunteer = true;
-                await _context.OneToOneClass.AddAsync(addNewStudent);
-                SaveChangesToDB();
-
-                return $"Added student to {volunteerRequirement.AreaOfSpecialization} class";
+                await _context.GroupsClass.AddAsync(addInGroupClass);
+                getStudentReq.AcceptedByVolunteer = true;
+                RemoveInvitation(inviteId);
             }
-            if(getStudentTypeOfClass.TypeOfClass == TypeOfClass.Group)
+            if(getInvite.StudentRequirement.TypeOfClass == TypeOfClass.OneToOne)
             {
-                var addNewStudent = new Group()
+                var addIn1to1 = new OneToOne()
                 {
-                    VolunteerRequirementId = volunteerRequirement.Id,
-                    StudentId = getStudentTypeOfClass.StudentProfileId,
-                    StudentRequirementId = studentRequirementId
+                    StudentProfileId = getInvite.StudentRequirement.StudentProfileId,
+                    StudentRequirementId = getInvite.StudentRequirement.Id,
+                    VolunteerProfileId = getInvite.VolunteerRequirement.VolunteerProfileId,
                 };
-                getStudentTypeOfClass.AcceptedByVolunteer = true;
-                await _context.GroupsClass.AddAsync(addNewStudent);
-                SaveChangesToDB();
-
-                return $"Added student to {volunteerRequirement.AreaOfSpecialization} class";
+                await _context.OneToOneClass.AddAsync(addIn1to1);
+                getStudentReq.AcceptedByVolunteer = true;
+                RemoveInvitation(inviteId);
             }
+            SaveChangesToDB();
+            return $"You have accepted the invitation from {getInvite.VolunteerRequirement.VolunteerProfile.FirstName} for {getStudentReq.Subject}";
+        }
 
-            return "Not added";
+        public string RejectedInvitation(int inviteId)
+        {
+            RemoveInvitation(inviteId);
+            SaveChangesToDB();
+            return "Rejected";
+        }
+
+        public async Task<List<Group>> GetStudnetInGroupClass(int studentId)
+        {
+            return await _context.GroupsClass
+                .Where(id => id.StudentProfileId == studentId)
+                .Include(i => i.VolunteerRequirement)
+                .Include(i => i.VolunteerProfile)
+                .Include(i => i.StudentRequirement)
+                .ToListAsync();
+        }
+
+        public async Task<List<OneToOne>> GetStudentInOneToOneClass(int studentId)
+        {
+            var student =  await _context.OneToOneClass
+                .Where(id => id.StudentProfileId == studentId)
+                .Include(i => i.VolunteerRequirement)
+                .ThenInclude(i => i.VolunteerProfile)
+                .Include(id => id.StudentRequirement)
+                .ToListAsync();
+            return student;
         }
 
         #region PRIVATE METHODS
         private void RemoveNotification(int volunteerID,int requirementId, int studentId)
         {
             var toRemove = _context.VolunteerInboxes.Where(id => id.VolunteerRequirementId == requirementId 
-            && id.StudentId == studentId
-            && id.VolunteerId == volunteerID).FirstOrDefault();
+            && id.StudentProfileId == studentId
+            && id.VolunteerProfileId == volunteerID).FirstOrDefault();
             _context.VolunteerInboxes.Remove(toRemove);
             _context.SaveChanges();
         }
 
+        private  void RemoveInvitation(int inviteId)
+        {
+            var rm =  _context.StudentInboxes.Where(id => id.Id == inviteId).FirstOrDefault();
+            _context.StudentInboxes.Remove(rm);
+        }
         private void SaveChangesToDB()
         {
             _context.SaveChanges();

@@ -1,10 +1,14 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using System;
 using System.ComponentModel.DataAnnotations;
 
 namespace GyanDyan.ViewModels
 {
     public class VolunteerRegisterViewModel
     {
+        //public string FileName { get; set; }
+        //public IFormFile FormFile { get; set; }
+
         [Required(ErrorMessage = "First Name is required")]
         [MaxLength(20), MinLength(3)]
         public string FirstName { get; set; }
